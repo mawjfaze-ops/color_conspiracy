@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Color Conspiracy — Social Deduction Game</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Color Conspiracy</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Space+Grotesk:wght@400;600;700&display=swap');
+
 :root {
   --bg: #0a0a12;
   --surface: rgba(255,255,255,0.04);
-  --surface-hover: rgba(255,255,255,0.08);
   --border: rgba(255,255,255,0.08);
   --text: #e8e8f0;
   --text-dim: #8888a0;
@@ -32,177 +32,209 @@ body {
   color:var(--text);
   min-height:100vh;
   overflow-x:hidden;
-  position:relative;
-}
-
-#bgCanvas {
-  position:fixed; inset:0; z-index:0; pointer-events:none;
 }
 
 .screen {
-  position:fixed; inset:0; z-index:1;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  opacity:0; pointer-events:none; transition:opacity .5s ease;
-  padding:20px; overflow-y:auto;
+  position:fixed; inset:0;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  overflow-y:auto;
+  z-index:1;
 }
-.screen.active { opacity:1; pointer-events:all; }
+.screen.active { display:flex; }
 
 /* Intro */
 .intro-title {
   font-family:'Space Grotesk',sans-serif;
-  font-size:clamp(2.5rem,8vw,5rem); font-weight:900;
+  font-size:clamp(2.5rem,8vw,5rem);
+  font-weight:900;
   background:linear-gradient(135deg,var(--purple),var(--pink),var(--cyan));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  text-align:center; letter-spacing:-1px;
-  animation:glow 3s ease-in-out infinite;
-}
-@keyframes glow {
-  0%,100%{filter:brightness(1) drop-shadow(0 0 20px rgba(184,41,221,.3));}
-  50%{filter:brightness(1.15) drop-shadow(0 0 40px rgba(184,41,221,.5));}
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  text-align:center;
+  letter-spacing:-1px;
 }
 .intro-tagline {
-  font-size:1.1rem; color:var(--text-dim); text-align:center;
-  margin:15px 0 40px; max-width:500px; line-height:1.6;
+  font-size:1.1rem;
+  color:var(--text-dim);
+  text-align:center;
+  margin:15px 0 40px;
+  max-width:500px;
+  line-height:1.6;
 }
 .glass-card {
-  background:var(--glass); backdrop-filter:blur(20px);
-  border:1px solid var(--border); border-radius:20px;
-  padding:30px; width:100%; max-width:480px;
+  background:var(--glass);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:30px;
+  width:100%;
+  max-width:480px;
 }
 .glass-card h3 {
-  font-family:'Space Grotesk',sans-serif; font-size:1.1rem;
-  margin-bottom:20px; color:var(--cyan); text-transform:uppercase; letter-spacing:2px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1.1rem;
+  margin-bottom:20px;
+  color:var(--cyan);
+  text-transform:uppercase;
+  letter-spacing:2px;
 }
-.input-row {
-  display:flex; gap:10px; margin-bottom:15px;
+input[type="text"] {
+  width:100%;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 18px;
+  color:var(--text);
+  font-size:1rem;
+  font-family:'Outfit',sans-serif;
+  outline:none;
+  margin-bottom:15px;
 }
-input[type="text"], select {
-  flex:1; background:rgba(255,255,255,.05); border:1px solid var(--border);
-  border-radius:12px; padding:14px 18px; color:var(--text); font-size:1rem;
-  font-family:'Outfit',sans-serif; outline:none; transition:border-color .2s;
-}
-input[type="text"]:focus, select:focus { border-color:var(--purple); }
+input[type="text"]:focus { border-color:var(--purple); }
 
 .btn {
-  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1rem;
-  padding:14px 32px; border:none; border-radius:12px; cursor:pointer;
-  text-transform:uppercase; letter-spacing:1.5px; transition:all .25s ease;
-  position:relative; overflow:hidden;
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
+  font-size:1rem;
+  padding:14px 32px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  transition:all .25s ease;
+  display:inline-block;
+  text-align:center;
 }
 .btn-primary {
   background:linear-gradient(135deg,var(--purple),var(--pink));
-  color:#fff; box-shadow:0 8px 30px rgba(184,41,221,.3);
+  color:#fff;
+  width:100%;
 }
-.btn-primary:hover { transform:translateY(-2px); box-shadow:0 12px 40px rgba(184,41,221,.5); }
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(184,41,221,.4); }
 .btn-primary:active { transform:scale(.97); }
-.btn-secondary {
-  background:var(--surface); border:1px solid var(--border); color:var(--text);
-}
-.btn-secondary:hover { border-color:var(--cyan); background:rgba(0,240,255,.08); }
-.btn-small { padding:8px 18px; font-size:.8rem; }
 
 .player-count {
-  display:flex; gap:8px; justify-content:center; margin:15px 0;
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  margin:15px 0;
 }
 .count-btn {
-  width:44px; height:44px; border-radius:12px;
-  background:var(--surface); border:1px solid var(--border);
-  color:var(--text); font-family:'Space Grotesk',sans-serif; font-weight:700;
-  font-size:1.1rem; cursor:pointer; transition:all .2s;
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--text);
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
+  font-size:1.1rem;
+  cursor:pointer;
+  transition:all .2s;
 }
 .count-btn:hover { border-color:var(--purple); }
 .count-btn.selected {
   background:linear-gradient(135deg,var(--purple),var(--pink));
-  border-color:transparent; color:#fff;
+  border-color:transparent;
+  color:#fff;
 }
 
-/* Role Reveal */
-.role-reveal {
-  text-align:center; max-width:600px; width:100%;
-}
+/* Role */
+.role-reveal { text-align:center; max-width:600px; width:100%; }
 .role-card {
-  background:var(--glass); backdrop-filter:blur(20px);
-  border:2px solid var(--border); border-radius:24px;
-  padding:40px 30px; margin:20px 0;
-  position:relative; overflow:hidden;
-  animation:slideUp .6s ease;
+  background:var(--glass);
+  backdrop-filter:blur(20px);
+  border:2px solid var(--border);
+  border-radius:24px;
+  padding:40px 30px;
+  margin:20px 0;
 }
-@keyframes slideUp {
-  from{opacity:0;transform:translateY(30px);}
-  to{opacity:1;transform:translateY(0);}
-}
-.role-card::before {
-  content:''; position:absolute; top:0; left:0; right:0; height:4px;
-  background:linear-gradient(90deg,var(--purple),var(--pink),var(--cyan));
-}
-.role-icon {
-  font-size:4rem; margin-bottom:15px;
-}
+.role-icon { font-size:4rem; margin-bottom:15px; }
 .role-name {
-  font-family:'Space Grotesk',sans-serif; font-size:1.8rem; font-weight:700;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1.8rem;
+  font-weight:700;
   margin-bottom:10px;
 }
-.role-desc {
-  color:var(--text-dim); font-size:.95rem; line-height:1.6; margin-bottom:25px;
-}
+.role-desc { color:var(--text-dim); font-size:.95rem; line-height:1.6; margin-bottom:25px; }
 .secret-box {
-  background:rgba(0,0,0,.4); border:1px solid rgba(255,255,255,.1);
-  border-radius:16px; padding:25px; margin-top:20px;
-  position:relative;
+  background:rgba(0,0,0,.4);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:16px;
+  padding:25px;
+  margin-top:20px;
 }
 .secret-label {
-  font-size:.7rem; text-transform:uppercase; letter-spacing:3px;
-  color:var(--cyan); margin-bottom:10px;
+  font-size:.7rem;
+  text-transform:uppercase;
+  letter-spacing:3px;
+  color:var(--cyan);
+  margin-bottom:10px;
 }
-.secret-text {
-  font-size:1.3rem; font-weight:600; line-height:1.5;
-}
+.secret-text { font-size:1.3rem; font-weight:600; line-height:1.5; }
 
-/* Game HUD */
+/* HUD */
 .game-hud {
-  position:fixed; top:0; left:0; right:0; z-index:100;
+  position:fixed;
+  top:0; left:0; right:0;
+  z-index:100;
   background:linear-gradient(to bottom,rgba(10,10,18,.95),rgba(10,10,18,.7));
-  backdrop-filter:blur(10px);
-  display:flex; align-items:center; justify-content:space-between;
-  padding:12px 20px; border-bottom:1px solid var(--border);
-}
-.hud-left, .hud-center, .hud-right {
-  display:flex; align-items:center; gap:12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 20px;
+  border-bottom:1px solid var(--border);
 }
 .hud-round {
-  font-family:'Space Grotesk',sans-serif; font-size:.9rem;
-  color:var(--text-dim); text-transform:uppercase; letter-spacing:1px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:.9rem;
+  color:var(--text-dim);
+  text-transform:uppercase;
 }
 .hud-round span { color:var(--cyan); font-weight:700; }
 .hud-timer {
-  font-family:'Space Grotesk',sans-serif; font-size:1.4rem; font-weight:700;
-  color:var(--cyan); min-width:50px; text-align:center;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1.4rem;
+  font-weight:700;
+  color:var(--cyan);
 }
-.hud-timer.warning { color:var(--yellow); animation:pulse .5s infinite; }
-.hud-timer.danger { color:var(--red); animation:pulse .3s infinite; }
-@keyframes pulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.1);} }
-
+.hud-timer.warning { color:var(--yellow); }
+.hud-timer.danger { color:var(--red); }
 .phase-badge {
-  font-size:.65rem; text-transform:uppercase; letter-spacing:2px;
-  padding:6px 14px; border-radius:20px; background:var(--surface);
-  border:1px solid var(--border); color:var(--text-dim);
+  font-size:.65rem;
+  text-transform:uppercase;
+  letter-spacing:2px;
+  padding:6px 14px;
+  border-radius:20px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--text-dim);
 }
-.phase-badge.discuss { border-color:var(--cyan); color:var(--cyan); }
-.phase-badge.vote { border-color:var(--purple); color:var(--purple); }
 
-/* Color Bar */
+/* Colors */
 .color-bar {
-  display:flex; gap:10px; justify-content:center; margin:80px 0 20px;
-  flex-wrap:wrap; padding:0 10px;
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin:80px 0 20px;
+  flex-wrap:wrap;
 }
 .color-pill {
-  width:56px; height:56px; border-radius:16px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:1.6rem; box-shadow:0 4px 20px rgba(0,0,0,.3);
-  border:2px solid transparent; transition:all .3s ease;
-  cursor:default;
+  width:56px;
+  height:56px;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.6rem;
+  box-shadow:0 4px 20px rgba(0,0,0,.3);
 }
-.color-pill:hover { transform:translateY(-4px) scale(1.1); }
 .color-pill.red { background:linear-gradient(135deg,var(--red),#ff5588); }
 .color-pill.blue { background:linear-gradient(135deg,var(--blue),#55aaff); }
 .color-pill.green { background:linear-gradient(135deg,var(--green),#55ff99); }
@@ -212,203 +244,264 @@ input[type="text"]:focus, select:focus { border-color:var(--purple); }
 
 /* Chat */
 .chat-container {
-  flex:1; width:100%; max-width:700px; margin:0 auto;
-  display:flex; flex-direction:column; overflow:hidden;
-  background:var(--glass); backdrop-filter:blur(15px);
-  border:1px solid var(--border); border-radius:20px;
-  margin-top:10px; margin-bottom:10px;
+  flex:1;
+  width:100%;
+  max-width:700px;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:20px;
+  margin-top:10px;
+  margin-bottom:10px;
 }
 .chat-messages {
-  flex:1; overflow-y:auto; padding:15px;
-  display:flex; flex-direction:column; gap:10px;
-  scroll-behavior:smooth;
+  flex:1;
+  overflow-y:auto;
+  padding:15px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
 }
-.chat-msg {
-  display:flex; gap:10px; align-items:flex-start;
-  animation:fadeIn .3s ease;
-}
-@keyframes fadeIn { from{opacity:0;transform:translateY(5px);} to{opacity:1;transform:translateY(0);} }
+.chat-msg { display:flex; gap:10px; align-items:flex-start; }
 .chat-avatar {
-  width:36px; height:36px; border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-size:1rem; flex-shrink:0; font-weight:700;
-  background:var(--surface); border:1px solid var(--border);
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1rem;
+  font-weight:700;
+  background:var(--surface);
+  border:1px solid var(--border);
+  flex-shrink:0;
 }
 .chat-avatar.you { background:linear-gradient(135deg,var(--purple),var(--pink)); border:none; }
 .chat-bubble {
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:14px; padding:10px 14px; max-width:80%;
-  font-size:.9rem; line-height:1.5;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:10px 14px;
+  max-width:80%;
+  font-size:.9rem;
+  line-height:1.5;
 }
-.chat-bubble .name {
-  font-size:.75rem; font-weight:700; color:var(--cyan); margin-bottom:2px;
-}
+.chat-bubble .name { font-size:.75rem; font-weight:700; color:var(--cyan); margin-bottom:2px; }
 .chat-bubble.system {
-  background:rgba(0,240,255,.08); border-color:rgba(0,240,255,.2);
-  text-align:center; max-width:100%; width:100%;
+  background:rgba(0,240,255,.08);
+  border-color:rgba(0,240,255,.2);
+  text-align:center;
+  max-width:100%;
+  width:100%;
 }
-.chat-bubble.system .name { color:var(--yellow); }
-
-/* Quick Actions */
 .quick-actions {
-  display:flex; gap:8px; flex-wrap:wrap; padding:10px 15px;
-  border-top:1px solid var(--border); background:rgba(0,0,0,.2);
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:10px 15px;
+  border-top:1px solid var(--border);
+  background:rgba(0,0,0,.2);
 }
 .quick-btn {
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:20px; padding:8px 16px; color:var(--text);
-  font-size:.8rem; cursor:pointer; transition:all .2s;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:8px 16px;
+  color:var(--text);
+  font-size:.8rem;
+  cursor:pointer;
+  transition:all .2s;
   font-family:'Outfit',sans-serif;
 }
 .quick-btn:hover { border-color:var(--purple); background:rgba(184,41,221,.1); }
 .quick-btn.accuse { border-color:var(--red); color:var(--red); }
-.quick-btn.accuse:hover { background:rgba(255,51,102,.15); }
 
-/* Accusation Modal */
+/* Modal */
 .modal-overlay {
-  position:fixed; inset:0; z-index:200;
-  background:rgba(0,0,0,.7); backdrop-filter:blur(5px);
-  display:flex; align-items:center; justify-content:center;
-  opacity:0; pointer-events:none; transition:opacity .3s;
+  position:fixed;
+  inset:0;
+  z-index:200;
+  background:rgba(0,0,0,.7);
+  display:none;
+  align-items:center;
+  justify-content:center;
 }
-.modal-overlay.active { opacity:1; pointer-events:all; }
+.modal-overlay.active { display:flex; }
 .modal-box {
-  background:var(--glass); border:1px solid var(--border);
-  border-radius:24px; padding:30px; max-width:400px; width:90%;
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:30px;
+  max-width:400px;
+  width:90%;
   text-align:center;
 }
-.modal-box h3 { font-family:'Space Grotesk',sans-serif; margin-bottom:20px; }
-.player-list {
-  display:flex; flex-direction:column; gap:8px; margin:15px 0;
-}
 .player-option {
-  display:flex; align-items:center; gap:12px;
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:12px; padding:12px 16px; cursor:pointer;
-  transition:all .2s; text-align:left;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px 16px;
+  cursor:pointer;
+  transition:all .2s;
+  text-align:left;
+  margin:8px 0;
 }
 .player-option:hover { border-color:var(--purple); }
-.player-option.selected {
-  border-color:var(--red); background:rgba(255,51,102,.1);
-}
+.player-option.selected { border-color:var(--red); background:rgba(255,51,102,.1); }
 
-/* Voting */
+/* Vote */
 .vote-grid {
-  display:grid; grid-template-columns:repeat(3,1fr); gap:15px;
-  max-width:500px; width:100%; margin:20px auto;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  max-width:500px;
+  width:100%;
+  margin:20px auto;
 }
 .vote-card {
-  aspect-ratio:1; border-radius:20px;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  font-size:2.5rem; cursor:pointer; transition:all .3s ease;
-  border:3px solid transparent; position:relative;
-  box-shadow:0 8px 30px rgba(0,0,0,.3);
+  aspect-ratio:1;
+  border-radius:20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  font-size:2.5rem;
+  cursor:pointer;
+  transition:all .3s ease;
+  border:3px solid transparent;
 }
 .vote-card:hover { transform:scale(1.08); border-color:rgba(255,255,255,.5); }
-.vote-card.selected {
-  border-color:#fff; transform:scale(1.12);
-  box-shadow:0 0 40px currentColor;
-}
-.vote-card .vote-label {
-  font-size:.8rem; font-weight:700; text-transform:uppercase;
-  margin-top:8px; letter-spacing:1px;
-}
+.vote-card.selected { border-color:#fff; transform:scale(1.12); }
 .vote-card.red { background:linear-gradient(135deg,var(--red),#ff5588); color:#fff; }
 .vote-card.blue { background:linear-gradient(135deg,var(--blue),#55aaff); color:#fff; }
 .vote-card.green { background:linear-gradient(135deg,var(--green),#55ff99); color:#000; }
 .vote-card.purple { background:linear-gradient(135deg,var(--purple),#dd55ee); color:#fff; }
 .vote-card.yellow { background:linear-gradient(135deg,var(--yellow),#ffdd44); color:#000; }
 .vote-card.orange { background:linear-gradient(135deg,var(--orange),#ffaa66); color:#000; }
+.vote-label { font-size:.8rem; font-weight:700; text-transform:uppercase; margin-top:8px; letter-spacing:1px; }
 
 /* Reveal */
-.reveal-container {
-  max-width:600px; width:100%; text-align:center;
-}
-.reveal-title {
-  font-family:'Space Grotesk',sans-serif; font-size:2rem; margin-bottom:10px;
-}
-.reveal-safe {
-  font-size:3rem; margin:20px 0; animation:popIn .5s ease;
-}
-@keyframes popIn {
-  0%{transform:scale(0);opacity:0;}
-  70%{transform:scale(1.2);}
-  100%{transform:scale(1);opacity:1;}
-}
-.vote-results {
-  display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
-  margin:20px 0;
-}
+.reveal-container { max-width:600px; width:100%; text-align:center; }
+.reveal-title { font-family:'Space Grotesk',sans-serif; font-size:2rem; margin-bottom:10px; }
+.reveal-safe { font-size:3rem; margin:20px 0; }
+.vote-results { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:20px 0; }
 .result-pill {
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:30px; padding:10px 20px;
-  display:flex; align-items:center; gap:8px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:30px;
+  padding:10px 20px;
+  display:flex;
+  align-items:center;
+  gap:8px;
   font-size:.9rem;
 }
-.result-pill .dot {
-  width:14px; height:14px; border-radius:50%;
-}
+.result-pill .dot { width:14px; height:14px; border-radius:50%; }
 .player-reveal-grid {
-  display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-  gap:12px; margin:20px 0; text-align:left;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:12px;
+  margin:20px 0;
+  text-align:left;
 }
 .reveal-card {
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:16px; padding:16px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px;
 }
 .reveal-card .r-name { font-weight:700; font-size:.9rem; margin-bottom:4px; }
 .reveal-card .r-role { font-size:.75rem; color:var(--text-dim); margin-bottom:4px; }
 .reveal-card .r-obj { font-size:.7rem; color:var(--cyan); }
 .reveal-card .r-vote {
-  margin-top:8px; padding-top:8px; border-top:1px solid var(--border);
-  font-size:.8rem; display:flex; align-items:center; gap:6px;
+  margin-top:8px;
+  padding-top:8px;
+  border-top:1px solid var(--border);
+  font-size:.8rem;
+  display:flex;
+  align-items:center;
+  gap:6px;
 }
 .reveal-card.winner { border-color:var(--green); background:rgba(0,230,118,.08); }
 .reveal-card.loser { border-color:var(--red); background:rgba(255,51,102,.05); }
 
-/* Final Results */
+/* Final */
 .final-title {
-  font-family:'Space Grotesk',sans-serif; font-size:2.5rem;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:2.5rem;
   background:linear-gradient(135deg,var(--purple),var(--pink),var(--cyan));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
   margin-bottom:10px;
 }
 .rank-badge {
-  display:inline-block; padding:10px 30px; border-radius:30px;
-  font-family:'Space Grotesk',sans-serif; font-weight:700;
-  font-size:1.1rem; margin:10px 0; border:2px solid;
+  display:inline-block;
+  padding:10px 30px;
+  border-radius:30px;
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
+  font-size:1.1rem;
+  margin:10px 0;
+  border:2px solid var(--cyan);
+  color:var(--cyan);
 }
 .score-big {
-  font-family:'Space Grotesk',sans-serif; font-size:3.5rem; font-weight:900;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:3.5rem;
+  font-weight:900;
   margin:15px 0;
 }
 .stats-row {
-  display:grid; grid-template-columns:repeat(2,1fr); gap:12px;
-  max-width:500px; width:100%; margin:20px auto;
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  max-width:500px;
+  width:100%;
+  margin:20px auto;
 }
 .stat-box {
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:14px; padding:16px; text-align:center;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px;
+  text-align:center;
 }
 .stat-box .s-label { font-size:.7rem; text-transform:uppercase; letter-spacing:1px; color:var(--text-dim); }
 .stat-box .s-val { font-family:'Space Grotesk',sans-serif; font-size:1.4rem; font-weight:700; margin-top:4px; }
 
-/* Chaos Event Banner */
+/* Chaos */
 .chaos-banner {
-  position:fixed; top:60px; left:50%; transform:translateX(-50%) translateY(-100px);
-  z-index:150; background:linear-gradient(135deg,var(--red),var(--orange));
-  color:#fff; padding:12px 30px; border-radius:30px;
-  font-family:'Space Grotesk',sans-serif; font-weight:700;
-  font-size:1rem; box-shadow:0 10px 40px rgba(255,51,102,.4);
-  transition:transform .5s cubic-bezier(.34,1.56,.64,1);
+  position:fixed;
+  top:60px;
+  left:50%;
+  transform:translateX(-50%) translateY(-150px);
+  z-index:150;
+  background:linear-gradient(135deg,var(--red),var(--orange));
+  color:#fff;
+  padding:12px 30px;
+  border-radius:30px;
+  font-family:'Space Grotesk',sans-serif;
+  font-weight:700;
+  font-size:1rem;
+  transition:transform .5s ease;
   text-align:center;
 }
 .chaos-banner.show { transform:translateX(-50%) translateY(0); }
 
-/* Scrollbar */
-::-webkit-scrollbar { width:6px; }
-::-webkit-scrollbar-track { background:transparent; }
-::-webkit-scrollbar-thumb { background:rgba(255,255,255,.15); border-radius:3px; }
+.btn-secondary {
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:15px 40px;
+  font-size:1rem;
+}
+.btn-secondary:hover { border-color:var(--cyan); background:rgba(0,240,255,.08); }
 
 @media(max-width:600px){
   .vote-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
@@ -422,33 +515,22 @@ input[type="text"]:focus, select:focus { border-color:var(--purple); }
 <base target="_blank">
 </head>
 <body>
-<canvas id="bgCanvas"></canvas>
 
-<!-- HUD -->
 <div class="game-hud" id="gameHud" style="display:none;">
-  <div class="hud-left">
-    <div class="hud-round">Round <span id="hudRound">1</span>/5</div>
-  </div>
-  <div class="hud-center">
-    <div class="phase-badge" id="phaseBadge">DISCUSSION</div>
-  </div>
-  <div class="hud-right">
-    <div class="hud-timer" id="hudTimer">90</div>
-  </div>
+  <div class="hud-left"><div class="hud-round">Round <span id="hudRound">1</span>/5</div></div>
+  <div class="hud-center"><div class="phase-badge" id="phaseBadge">DISCUSSION</div></div>
+  <div class="hud-right"><div class="hud-timer" id="hudTimer">90</div></div>
 </div>
 
-<!-- Chaos Banner -->
 <div class="chaos-banner" id="chaosBanner"></div>
 
-<!-- Screens -->
+<!-- INTRO -->
 <div class="screen active" id="screenIntro">
   <div class="intro-title">Color Conspiracy</div>
-  <div class="intro-tagline">Everyone sees the colors. Nobody sees the whole truth. A social deduction game of deception, trust, and strategy.</div>
+  <div class="intro-tagline">Everyone sees the colors. Nobody sees the whole truth.</div>
   <div class="glass-card">
     <h3>Game Setup</h3>
-    <div class="input-row">
-      <input type="text" id="playerName" placeholder="Your name" value="You" maxlength="12">
-    </div>
+    <input type="text" id="playerName" placeholder="Your name" value="You" maxlength="12">
     <div style="text-align:center; margin-bottom:10px; font-size:.85rem; color:var(--text-dim);">Players (including you + AI)</div>
     <div class="player-count" id="playerCount">
       <button class="count-btn" data-n="4">4</button>
@@ -457,61 +539,66 @@ input[type="text"]:focus, select:focus { border-color:var(--purple); }
       <button class="count-btn" data-n="7">7</button>
       <button class="count-btn" data-n="8">8</button>
     </div>
-    <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="startMatch()">Start Match</button>
+    <button class="btn btn-primary" id="startBtn">Start Match</button>
   </div>
 </div>
 
+<!-- ROLE -->
 <div class="screen" id="screenRole">
   <div class="role-reveal">
     <div style="font-size:.8rem; text-transform:uppercase; letter-spacing:3px; color:var(--text-dim); margin-bottom:10px;">Your Secret Role</div>
     <div class="role-card" id="roleCard">
       <div class="role-icon" id="roleIcon">🕵️</div>
       <div class="role-name" id="roleName">The Informant</div>
-      <div class="role-desc" id="roleDesc">You receive genuine information. Help the group make the correct choice.</div>
+      <div class="role-desc" id="roleDesc">You receive genuine information.</div>
       <div class="secret-box">
         <div class="secret-label">🔒 Secret Information</div>
-        <div class="secret-text" id="secretText">Purple is safe.</div>
+        <div class="secret-text" id="secretText">Loading...</div>
       </div>
     </div>
-    <button class="btn btn-primary" onclick="enterDiscussion()" style="margin-top:20px;">Enter Discussion</button>
+    <button class="btn btn-primary" id="enterDiscussBtn" style="margin-top:20px;">Enter Discussion</button>
   </div>
 </div>
 
+<!-- GAME -->
 <div class="screen" id="screenGame">
   <div class="color-bar" id="colorBar"></div>
-  <div class="chat-container" id="chatContainer">
+  <div class="chat-container">
     <div class="chat-messages" id="chatMessages"></div>
-    <div class="quick-actions" id="quickActions">
-      <button class="quick-btn" onclick="sendQuick('I think the safe color is...')">I think...</button>
-      <button class="quick-btn" onclick="sendQuick('Why do you say that?')">Why?</button>
-      <button class="quick-btn" onclick="sendQuick('I don\'t trust that claim.')">Doubt</button>
-      <button class="quick-btn" onclick="sendQuick('I have some information...')">Hint</button>
-      <button class="quick-btn accuse" onclick="openAccuse()">Accuse</button>
-      <button class="quick-btn" onclick="sendQuick('Let\'s vote soon.')">Vote now</button>
+    <div class="quick-actions">
+      <button class="quick-btn" data-msg="I think the safe color is...">I think...</button>
+      <button class="quick-btn" data-msg="Why do you say that?">Why?</button>
+      <button class="quick-btn" data-msg="I do not trust that claim.">Doubt</button>
+      <button class="quick-btn" data-msg="I have some information...">Hint</button>
+      <button class="quick-btn accuse" id="accuseBtn">Accuse</button>
+      <button class="quick-btn" data-msg="Let us vote soon.">Vote now</button>
     </div>
   </div>
 </div>
 
+<!-- VOTE -->
 <div class="screen" id="screenVote">
   <div style="text-align:center; margin-top:60px;">
     <div style="font-family:'Space Grotesk',sans-serif; font-size:1.5rem; margin-bottom:10px;">Secret Vote</div>
     <div style="color:var(--text-dim); margin-bottom:30px;">Choose the color you believe is safe.</div>
     <div class="vote-grid" id="voteGrid"></div>
-    <button class="btn btn-primary" style="margin-top:30px;" id="confirmVoteBtn" onclick="confirmVote()" disabled>Confirm Vote</button>
+    <button class="btn btn-primary" style="margin-top:30px;" id="confirmVoteBtn" disabled>Confirm Vote</button>
   </div>
 </div>
 
+<!-- REVEAL -->
 <div class="screen" id="screenReveal">
   <div class="reveal-container">
     <div class="reveal-title" id="revealTitle">The Truth Is Revealed</div>
     <div class="reveal-safe" id="revealSafe"></div>
     <div class="vote-results" id="voteResults"></div>
-    <div style="font-size:.8rem; text-transform:uppercase; letter-spacing:2px; color:var(--text-dim); margin:20px 0 10px;">Player Roles & Votes</div>
+    <div style="font-size:.8rem; text-transform:uppercase; letter-spacing:2px; color:var(--text-dim); margin:20px 0 10px;">Player Roles &amp; Votes</div>
     <div class="player-reveal-grid" id="playerRevealGrid"></div>
-    <button class="btn btn-primary" style="margin-top:20px;" id="nextRoundBtn" onclick="nextRound()">Next Round</button>
+    <button class="btn btn-primary" style="margin-top:20px;" id="nextRoundBtn">Next Round</button>
   </div>
 </div>
 
+<!-- FINAL -->
 <div class="screen" id="screenFinal">
   <div style="text-align:center; max-width:600px; width:100%;">
     <div class="final-title">Match Complete</div>
@@ -523,47 +610,25 @@ input[type="text"]:focus, select:focus { border-color:var(--purple); }
       <div class="stat-box"><div class="s-label">Manipulation</div><div class="s-val" id="statManip">0%</div></div>
       <div class="stat-box"><div class="s-label">Social Reading</div><div class="s-val" id="statSocial">0%</div></div>
     </div>
-    <div class="action-buttons" style="display:flex; gap:15px; justify-content:center; margin-top:30px;">
+    <div style="display:flex; gap:15px; justify-content:center; margin-top:30px;">
       <button class="btn btn-primary" onclick="location.reload()">Play Again</button>
     </div>
   </div>
 </div>
 
-<!-- Accuse Modal -->
+<!-- ACCUSE MODAL -->
 <div class="modal-overlay" id="accuseModal">
   <div class="modal-box">
-    <h3>Accuse a Player</h3>
+    <h3 style="font-family:'Space Grotesk',sans-serif; margin-bottom:20px;">Accuse a Player</h3>
     <p style="color:var(--text-dim); font-size:.9rem; margin-bottom:15px;">Who do you think is manipulating the group?</p>
     <div class="player-list" id="accuseList"></div>
-    <button class="btn btn-primary" style="margin-top:15px;" onclick="submitAccuse()">Accuse</button>
-    <button class="btn btn-secondary btn-small" style="margin-top:10px;" onclick="closeAccuse()">Cancel</button>
+    <button class="btn btn-primary" style="margin-top:15px;" id="submitAccuseBtn">Accuse</button>
+    <button class="btn btn-secondary" style="margin-top:10px;" id="cancelAccuseBtn">Cancel</button>
   </div>
 </div>
 
 <script>
-// ===================== BACKGROUND PARTICLES =====================
-const bgCanvas = document.getElementById('bgCanvas');
-const bgCtx = bgCanvas.getContext('2d');
-let bgParticles = [];
-function resizeBg(){ bgCanvas.width=window.innerWidth; bgCanvas.height=window.innerHeight; }
-resizeBg(); window.addEventListener('resize',resizeBg);
-class BgParticle {
-  constructor(){ this.reset(); }
-  reset(){
-    this.x=Math.random()*bgCanvas.width; this.y=Math.random()*bgCanvas.height;
-    this.size=Math.random()*3+.5; this.vx=(Math.random()-.5)*.3; this.vy=(Math.random()-.5)*.3;
-    this.alpha=Math.random()*.4+.05;
-    const cols=['184,41,221','255,102,170','0,240,255','255,51,102'];
-    this.col=cols[Math.floor(Math.random()*cols.length)];
-  }
-  update(){ this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>bgCanvas.width||this.y<0||this.y>bgCanvas.height)this.reset(); }
-  draw(){ bgCtx.beginPath(); bgCtx.arc(this.x,this.y,this.size,0,Math.PI*2); bgCtx.fillStyle=`rgba(${this.col},${this.alpha})`; bgCtx.fill(); }
-}
-for(let i=0;i<60;i++)bgParticles.push(new BgParticle());
-function animateBg(){ bgCtx.clearRect(0,0,bgCanvas.width,bgCanvas.height); bgParticles.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(animateBg); }
-animateBg();
-
-// ===================== GAME DATA =====================
+// ===================== DATA =====================
 const COLORS = [
   {key:'red', emoji:'🔴', name:'Red', hex:'#ff3366'},
   {key:'blue', emoji:'🔵', name:'Blue', hex:'#3388ff'},
@@ -576,121 +641,135 @@ const COLORS = [
 const ROLES = {
   informant: { name:'The Informant', icon:'🟢', desc:'You receive genuine information. Help the group make the correct choice.', color:'#00e676' },
   manipulator: { name:'The Manipulator', icon:'🔴', desc:'Convince the majority to select your target color without being discovered.', color:'#ff3366' },
-  deceiver: { name:'The Deceiver', icon:'🟣', desc:'Create confusion. Contradict others and sow doubt without being identified.', color:'#b829dd' },
-  analyst: { name:'The Analyst', icon:'🔵', desc:'You have a logical clue about color relationships. Deduce the truth.', color:'#3388ff' },
-  chaos: { name:'The Chaos Player', icon:'🟡', desc:'Prevent the group from reaching consensus. Create disagreement.', color:'#ffcc00' }
+  deceiver: { name:'The Deceiver', icon:'🟣', desc:'Create confusion. Contradict others and sow doubt.', color:'#b829dd' },
+  analyst: { name:'The Analyst', icon:'🔵', desc:'You have a logical clue about color relationships.', color:'#3388ff' },
+  chaos: { name:'The Chaos Player', icon:'🟡', desc:'Prevent the group from reaching consensus.', color:'#ffcc00' }
 };
 
 const BOT_NAMES = ['Alex','Jordan','Casey','Riley','Taylor','Morgan','Quinn','Avery'];
+const AI_PERSONALITIES = ['aggressive','cautious','friendly','suspicious','logical'];
 
-// ===================== GAME STATE =====================
+// ===================== STATE =====================
 let game = {
-  players: [],
-  humanIndex: 0,
-  round: 1,
-  maxRounds: 5,
-  phase: 'setup', // setup, role, discuss, vote, reveal, final
-  timer: null,
-  timeLeft: 90,
-  safeColor: null,
-  dangerousColor: null,
-  roundType: 'safe',
-  chaosEvent: null,
-  chatHistory: [],
-  accusations: [],
-  votes: {},
+  players: [], humanIndex: 0, round: 1, maxRounds: 5,
+  phase: 'setup', timer: null, timeLeft: 90,
+  safeColor: null, dangerousColor: null,
+  chatHistory: [], accusations: [], votes: {},
   matchStats: { correctVotes:0, accusations:0, correctAccusations:0, manipSuccess:0, totalRounds:0 }
 };
+let selectedAccuseId = null;
+let selectedVote = null;
 
-// ===================== SETUP =====================
-document.querySelectorAll('.count-btn').forEach(btn=>{
-  btn.onclick=()=>{
-    document.querySelectorAll('.count-btn').forEach(b=>b.classList.remove('selected'));
-    btn.classList.add('selected');
-  };
-});
-
-function startMatch(){
-  const name = document.getElementById('playerName').value.trim() || 'You';
-  const count = parseInt(document.querySelector('.count-btn.selected').dataset.n);
-  initPlayers(name, count);
-  showScreen('screenRole');
-  assignRoles();
-  renderRoleCard();
+// ===================== UTILS =====================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
 }
 
-function initPlayers(humanName, total){
-  game.players = [];
-  const shuffledNames = [...BOT_NAMES].sort(()=>Math.random()-.5);
-  game.players.push({
-    id:0, name:humanName, isHuman:true,
-    role:null, secret:null, objective:null,
-    color:COLORS[Math.floor(Math.random()*COLORS.length)],
-    vote:null, score:0, accusations:0, correctAccusations:0
+function addChat(senderId, sender, text, isSystem) {
+  game.chatHistory.push({senderId: senderId, sender: sender, text: text, time: Date.now()});
+  const box = document.getElementById('chatMessages');
+  const isYou = senderId === 0;
+  const avatar = isSystem ? '🎨' : (isYou ? '👤' : game.players[senderId].name[0]);
+  const avatarClass = isYou ? 'you' : '';
+  const bubbleClass = isSystem ? 'system' : '';
+  const name = isSystem ? 'Game Master' : (isYou ? 'You' : sender);
+  const div = document.createElement('div');
+  div.className = 'chat-msg';
+  div.innerHTML = '<div class="chat-avatar ' + avatarClass + '">' + avatar + '</div><div class="chat-bubble ' + bubbleClass + '"><div class="name">' + name + '</div><div>' + text + '</div></div>';
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+// ===================== SETUP =====================
+document.querySelectorAll('.count-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.count-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
   });
-  for(let i=1;i<total;i++){
+});
+
+document.getElementById('startBtn').addEventListener('click', function() {
+  try {
+    const name = document.getElementById('playerName').value.trim() || 'You';
+    const selectedBtn = document.querySelector('.count-btn.selected');
+    const count = selectedBtn ? parseInt(selectedBtn.getAttribute('data-n')) : 5;
+    initPlayers(name, count);
+    assignRoles();
+    renderRoleCard();
+    showScreen('screenRole');
+  } catch(e) {
+    console.error('Start error:', e);
+    alert('Error starting game: ' + e.message);
+  }
+});
+
+function initPlayers(humanName, total) {
+  game.players = [];
+  const shuffledNames = BOT_NAMES.slice().sort(function() { return Math.random() - 0.5; });
+  game.players.push({
+    id: 0, name: humanName, isHuman: true,
+    role: null, secret: null, objective: null,
+    vote: null, score: 0, accusations: 0, correctAccusations: 0
+  });
+  for (let i = 1; i < total; i++) {
     game.players.push({
-      id:i, name:shuffledNames[i-1], isHuman:false,
-      role:null, secret:null, objective:null,
-      color:COLORS[Math.floor(Math.random()*COLORS.length)],
-      vote:null, score:0, accusations:0, correctAccusations:0
+      id: i, name: shuffledNames[i-1], isHuman: false,
+      role: null, secret: null, objective: null,
+      vote: null, score: 0, accusations: 0, correctAccusations: 0
     });
   }
   game.humanIndex = 0;
 }
 
-function assignRoles(){
+function assignRoles() {
   const roles = ['informant','manipulator','deceiver','analyst','chaos'];
-  const assigned = [];
-  // Ensure at least one manipulator and one informant
-  assigned.push('manipulator');
-  assigned.push('informant');
-  while(assigned.length < game.players.length){
-    const r = roles[Math.floor(Math.random()*roles.length)];
-    assigned.push(r);
+  const assigned = ['manipulator', 'informant'];
+  while (assigned.length < game.players.length) {
+    assigned.push(roles[Math.floor(Math.random() * roles.length)]);
   }
-  assigned.sort(()=>Math.random()-.5);
-
-  game.players.forEach((p,i)=>{
+  assigned.sort(function() { return Math.random() - 0.5; });
+  game.players.forEach(function(p, i) {
     p.role = assigned[i];
     generateSecret(p);
   });
 }
 
-function generateSecret(player){
-  const safe = COLORS[Math.floor(Math.random()*COLORS.length)];
-  const dangerous = COLORS.filter(c=>c.key!==safe.key)[Math.floor(Math.random()*5)];
-  const other = COLORS.filter(c=>c.key!==safe.key && c.key!==dangerous.key)[0];
+function generateSecret(player) {
+  const safe = COLORS[Math.floor(Math.random() * COLORS.length)];
+  const dangerous = COLORS.filter(function(c) { return c.key !== safe.key; })[Math.floor(Math.random() * 5)];
+  const other = COLORS.filter(function(c) { return c.key !== safe.key && c.key !== dangerous.key; })[0];
   game.safeColor = safe;
   game.dangerousColor = dangerous;
 
-  switch(player.role){
+  switch(player.role) {
     case 'informant':
-      player.secret = `${safe.name} is safe.`;
-      player.objective = `Help the majority choose ${safe.name}.`;
+      player.secret = safe.name + ' is safe.';
+      player.objective = 'Help the majority choose ' + safe.name + '.';
       break;
     case 'manipulator':
-      const target = Math.random()>.5 ? dangerous : other;
-      player.secret = `Make everyone choose ${target.name}. You will gain bonus points if ${target.name} gets the most votes.`;
+      const target = Math.random() > 0.5 ? dangerous : other;
+      player.secret = 'Make everyone choose ' + target.name + '. You gain bonus points if ' + target.name + ' gets the most votes.';
       player.objective = target.key;
       break;
     case 'deceiver':
-      player.secret = `Create confusion. Contradict the popular opinion. Make players doubt ${safe.name}.`;
-      player.objective = `Prevent a clear consensus on ${safe.name}.`;
+      player.secret = 'Create confusion. Contradict the popular opinion. Make players doubt ' + safe.name + '.';
+      player.objective = 'Prevent a clear consensus on ' + safe.name + '.';
       break;
     case 'analyst':
-      const rel = Math.random()>.5;
-      player.secret = rel ? `If ${safe.name} is safe, then ${dangerous.name} is dangerous.` : `${safe.name} and ${other.name} have opposite properties.`;
-      player.objective = `Correctly deduce which color is safe.`;
+      const rel = Math.random() > 0.5;
+      player.secret = rel ? 'If ' + safe.name + ' is safe, then ' + dangerous.name + ' is dangerous.' : safe.name + ' and ' + other.name + ' have opposite properties.';
+      player.objective = 'Correctly deduce which color is safe.';
       break;
     case 'chaos':
-      player.secret = `Prevent the group from reaching a unanimous decision. A split vote benefits you.`;
-      player.objective = `Ensure no single color gets more than 50% of votes.`;
+      player.secret = 'Prevent the group from reaching a unanimous decision. A split vote benefits you.';
+      player.objective = 'Ensure no single color gets more than 50% of votes.';
       break;
   }
 }
 
-function renderRoleCard(){
+function renderRoleCard() {
   const p = game.players[game.humanIndex];
   const r = ROLES[p.role];
   document.getElementById('roleIcon').textContent = r.icon;
@@ -701,7 +780,9 @@ function renderRoleCard(){
 }
 
 // ===================== DISCUSSION =====================
-function enterDiscussion(){
+document.getElementById('enterDiscussBtn').addEventListener('click', enterDiscussion);
+
+function enterDiscussion() {
   document.getElementById('gameHud').style.display = 'flex';
   showScreen('screenGame');
   game.phase = 'discuss';
@@ -709,350 +790,308 @@ function enterDiscussion(){
   game.chatHistory = [];
   game.accusations = [];
   game.votes = {};
-  game.players.forEach(p=>p.vote=null);
+  game.players.forEach(function(p) { p.vote = null; });
 
-  renderColorBar();
-  renderChat();
+  document.getElementById('colorBar').innerHTML = COLORS.map(function(c) {
+    return '<div class="color-pill ' + c.key + '">' + c.emoji + '</div>';
+  }).join('');
+
+  document.getElementById('chatMessages').innerHTML = '';
+  addChat('system', 'Game Master', 'Round ' + game.round + ': The colors are displayed. Discuss and discover the truth. You have 90 seconds.', true);
+
   startTimer();
-
-  // Initial system message
-  addChat('system','Game Master',`Round ${game.round}: The colors are displayed. Discuss and discover the truth. You have 90 seconds.`,true);
-
-  // AI starts talking after a delay
   scheduleAIChat();
 }
 
-function renderColorBar(){
-  const bar = document.getElementById('colorBar');
-  bar.innerHTML = COLORS.map(c=>`<div class="color-pill ${c.key}">${c.emoji}</div>`).join('');
+function startTimer() {
+  updateTimerDisplay();
+  game.timer = setInterval(function() {
+    game.timeLeft--;
+    updateTimerDisplay();
+    if (game.timeLeft <= 0) {
+      clearInterval(game.timer);
+      if (game.phase === 'discuss') enterVote();
+    }
+  }, 1000);
 }
 
-function renderChat(){
-  const box = document.getElementById('chatMessages');
-  box.innerHTML = game.chatHistory.map(msg=>{
-    const isSystem = msg.sender==='system';
-    const isYou = msg.senderId===0;
-    const avatar = isSystem ? '🎨' : (isYou ? '👤' : game.players[msg.senderId]?.name[0] || '?');
-    const avatarClass = isYou ? 'you' : '';
-    const bubbleClass = isSystem ? 'system' : '';
-    const name = isSystem ? 'Game Master' : (isYou ? 'You' : msg.sender);
-    return `
-      <div class="chat-msg">
-        <div class="chat-avatar ${avatarClass}">${avatar}</div>
-        <div class="chat-bubble ${bubbleClass}">
-          <div class="name">${name}</div>
-          <div>${msg.text}</div>
-        </div>
-      </div>
-    `;
-  }).join('');
-  box.scrollTop = box.scrollHeight;
+function updateTimerDisplay() {
+  const el = document.getElementById('hudTimer');
+  el.textContent = game.timeLeft;
+  el.classList.remove('warning', 'danger');
+  if (game.timeLeft <= 15) el.classList.add('danger');
+  else if (game.timeLeft <= 30) el.classList.add('warning');
 }
 
-function addChat(senderId, sender, text, isSystem=false){
-  game.chatHistory.push({senderId, sender, text, time:Date.now()});
-  renderChat();
-}
-
-function sendQuick(text){
-  if(game.phase !== 'discuss') return;
-  addChat(0, game.players[0].name, text);
-  // Trigger AI responses
-  setTimeout(()=>aiRespondTo(0, text), 800+Math.random()*1000);
-}
-
-// ===================== AI SYSTEM =====================
-const AI_PERSONALITIES = ['aggressive','cautious','friendly','suspicious','logical'];
-
-function getBotPersonality(bot){
-  if(!bot.personality) bot.personality = AI_PERSONALITIES[bot.id % AI_PERSONALITIES.length];
-  return bot.personality;
-}
-
-function scheduleAIChat(){
+function scheduleAIChat() {
   const delays = [2000, 4500, 7000, 10000, 14000, 18000, 23000, 28000, 35000, 42000];
-  delays.forEach((d,i)=>{
-    setTimeout(()=>{
-      if(game.phase==='discuss') aiSpeak();
+  delays.forEach(function(d) {
+    setTimeout(function() {
+      if (game.phase === 'discuss') aiSpeak();
     }, d);
   });
-  // Force vote after 90s
-  setTimeout(()=>{
-    if(game.phase==='discuss') enterVote();
+  setTimeout(function() {
+    if (game.phase === 'discuss') enterVote();
   }, 90000);
 }
 
-function aiSpeak(){
-  const bots = game.players.filter(p=>!p.isHuman);
-  const speaker = bots[Math.floor(Math.random()*bots.length)];
+function getBotPersonality(bot) {
+  if (!bot.personality) bot.personality = AI_PERSONALITIES[bot.id % AI_PERSONALITIES.length];
+  return bot.personality;
+}
+
+function aiSpeak() {
+  const bots = game.players.filter(function(p) { return !p.isHuman; });
+  const speaker = bots[Math.floor(Math.random() * bots.length)];
   const msg = generateAIMessage(speaker);
-  addChat(speaker.id, speaker.name, msg);
+  addChat(speaker.id, speaker.name, msg, false);
 }
 
-function aiRespondTo(humanId, humanText){
-  const bots = game.players.filter(p=>!p.isHuman);
-  // 60% chance a bot responds
-  if(Math.random()>.6) return;
-  const responder = bots[Math.floor(Math.random()*bots.length)];
-  const msg = generateAIResponse(responder, humanText);
-  setTimeout(()=>addChat(responder.id, responder.name, msg), 500+Math.random()*1500);
-}
-
-function generateAIMessage(bot){
-  const p = getBotPersonality(bot);
+function generateAIMessage(bot) {
   const safe = game.safeColor;
-  const colors = COLORS.map(c=>c.name);
-  const randColor = ()=>colors[Math.floor(Math.random()*colors.length)];
+  const colors = COLORS.map(function(c) { return c.name; });
+  function randColor() { return colors[Math.floor(Math.random() * colors.length)]; }
 
-  if(bot.role==='manipulator'){
-    const target = bot.objective;
-    const targetName = COLORS.find(c=>c.key===target)?.name || randColor();
+  if (bot.role === 'manipulator') {
+    const targetName = COLORS.find(function(c) { return c.key === bot.objective; })?.name || randColor();
     const lines = [
-      `I'm fairly certain ${targetName} is the safe choice.`,
-      `I've got a strong feeling about ${targetName}.`,
-      `Why is nobody considering ${targetName}? It feels right.`,
-      `${targetName} stands out to me. I'd bet on it.`,
-      `Trust me, ${targetName} is the answer.`
+      'I'm fairly certain ' + targetName + ' is the safe choice.',
+      'I've got a strong feeling about ' + targetName + '.',
+      'Why is nobody considering ' + targetName + '? It feels right.',
+      targetName + ' stands out to me. I'd bet on it.',
+      'Trust me, ' + targetName + ' is the answer.'
     ];
-    return lines[Math.floor(Math.random()*lines.length)];
+    return lines[Math.floor(Math.random() * lines.length)];
   }
-  if(bot.role==='informant'){
+  if (bot.role === 'informant') {
     const lines = [
-      `I have reason to believe ${safe.name} is safe.`,
-      `My information points to ${safe.name}.`,
-      `I'd go with ${safe.name} based on what I know.`,
-      `${safe.name} seems like the logical choice.`,
-      `I'm confident ${safe.name} is correct.`
+      'I have reason to believe ' + safe.name + ' is safe.',
+      'My information points to ' + safe.name + '.',
+      'I'd go with ' + safe.name + ' based on what I know.',
+      safe.name + ' seems like the logical choice.',
+      'I'm confident ' + safe.name + ' is correct.'
     ];
-    return lines[Math.floor(Math.random()*lines.length)];
+    return lines[Math.floor(Math.random() * lines.length)];
   }
-  if(bot.role==='deceiver'){
-    const fake = colors.filter(c=>c!==safe.name)[Math.floor(Math.random()*5)];
+  if (bot.role === 'deceiver') {
+    const fake = colors.filter(function(c) { return c !== safe.name; })[Math.floor(Math.random() * 5)];
     const lines = [
-      `Wait, are we sure about ${safe.name}? I'm not convinced.`,
-      `Actually, my info suggests ${fake} might be safe.`,
-      `I think someone is trying to push us toward the wrong color.`,
-      `${safe.name}? That doesn't match what I was told.`,
-      `Be careful. Not everyone is being honest here.`
+      'Wait, are we sure about ' + safe.name + '? I'm not convinced.',
+      'Actually, my info suggests ' + fake + ' might be safe.',
+      'I think someone is trying to push us toward the wrong color.',
+      safe.name + '? That doesn't match what I was told.',
+      'Be careful. Not everyone is being honest here.'
     ];
-    return lines[Math.floor(Math.random()*lines.length)];
+    return lines[Math.floor(Math.random() * lines.length)];
   }
-  if(bot.role==='analyst'){
+  if (bot.role === 'analyst') {
     const lines = [
-      `Logically, ${safe.name} makes the most sense.`,
-      `If we analyze the patterns, ${safe.name} fits.`,
-      `My deduction leads to ${safe.name}.`,
-      `The relationship between colors suggests ${safe.name}.`,
-      `Let's think this through... ${safe.name} is the answer.`
+      'Logically, ' + safe.name + ' makes the most sense.',
+      'If we analyze the patterns, ' + safe.name + ' fits.',
+      'My deduction leads to ' + safe.name + '.',
+      'The relationship between colors suggests ' + safe.name + '.',
+      'Let's think this through... ' + safe.name + ' is the answer.'
     ];
-    return lines[Math.floor(Math.random()*lines.length)];
+    return lines[Math.floor(Math.random() * lines.length)];
   }
-  if(bot.role==='chaos'){
+  if (bot.role === 'chaos') {
     const lines = [
-      `I think we should all vote for different colors.`,
-      `What if the safe color isn't even obvious?`,
-      `I'm torn between ${randColor()} and ${randColor()}.`,
-      `Maybe there IS no safe color?`,
-      `Let's not all agree too quickly.`
+      'I think we should all vote for different colors.',
+      'What if the safe color isn't even obvious?',
+      'I'm torn between ' + randColor() + ' and ' + randColor() + '.',
+      'Maybe there IS no safe color?',
+      'Let's not all agree too quickly.'
     ];
-    return lines[Math.floor(Math.random()*lines.length)];
+    return lines[Math.floor(Math.random() * lines.length)];
   }
-  return `I think ${randColor()} might be safe.`;
+  return 'I think ' + randColor() + ' might be safe.';
 }
 
-function generateAIResponse(bot, humanText){
+// Quick chat buttons
+document.querySelectorAll('.quick-btn[data-msg]').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    if (game.phase !== 'discuss') return;
+    const text = btn.getAttribute('data-msg');
+    addChat(0, game.players[0].name, text, false);
+    setTimeout(function() {
+      const bots = game.players.filter(function(p) { return !p.isHuman; });
+      if (Math.random() > 0.6) return;
+      const responder = bots[Math.floor(Math.random() * bots.length)];
+      const msg = generateAIResponse(responder, text);
+      setTimeout(function() { addChat(responder.id, responder.name, msg, false); }, 500 + Math.random() * 1500);
+    }, 800 + Math.random() * 1000);
+  });
+});
+
+function generateAIResponse(bot, humanText) {
   const safe = game.safeColor;
-  if(humanText.includes('trust') || humanText.includes('doubt')){
-    return `Exactly. We need to be careful about who we trust.`;
+  if (humanText.indexOf('trust') >= 0 || humanText.indexOf('doubt') >= 0) {
+    return 'Exactly. We need to be careful about who we trust.';
   }
-  if(humanText.includes('vote') || humanText.includes('choose')){
-    if(bot.role==='manipulator'){
-      const target = COLORS.find(c=>c.key===bot.objective)?.name;
-      return `I'm ready to vote ${target}.`;
+  if (humanText.indexOf('vote') >= 0 || humanText.indexOf('choose') >= 0) {
+    if (bot.role === 'manipulator') {
+      const target = COLORS.find(function(c) { return c.key === bot.objective; })?.name;
+      return 'I'm ready to vote ' + target + '.';
     }
-    return `I'm leaning toward ${safe.name}.`;
+    return 'I'm leaning toward ' + safe.name + '.';
   }
-  if(humanText.includes('information') || humanText.includes('know')){
-    return `I have some info too, but I don't want to reveal everything.`;
+  if (humanText.indexOf('information') >= 0 || humanText.indexOf('know') >= 0) {
+    return 'I have some info too, but I don't want to reveal everything.';
   }
   return generateAIMessage(bot);
 }
 
-// ===================== TIMER =====================
-function startTimer(){
-  updateTimerDisplay();
-  game.timer = setInterval(()=>{
-    game.timeLeft--;
-    updateTimerDisplay();
-    if(game.timeLeft<=0){
-      clearInterval(game.timer);
-      if(game.phase==='discuss') enterVote();
-    }
-  },1000);
-}
-
-function updateTimerDisplay(){
-  const el = document.getElementById('hudTimer');
-  el.textContent = game.timeLeft;
-  el.classList.remove('warning','danger');
-  if(game.timeLeft<=15) el.classList.add('danger');
-  else if(game.timeLeft<=30) el.classList.add('warning');
-}
-
 // ===================== ACCUSATION =====================
-function openAccuse(){
+document.getElementById('accuseBtn').addEventListener('click', openAccuse);
+document.getElementById('cancelAccuseBtn').addEventListener('click', closeAccuse);
+document.getElementById('submitAccuseBtn').addEventListener('click', submitAccuse);
+
+function openAccuse() {
   const list = document.getElementById('accuseList');
-  list.innerHTML = game.players.filter(p=>!p.isHuman).map(p=>`
-    <div class="player-option" data-id="${p.id}" onclick="selectAccuse(this)">
-      <div class="chat-avatar">${p.name[0]}</div>
-      <div><div style="font-weight:700;">${p.name}</div><div style="font-size:.75rem;color:var(--text-dim);">Player ${p.id+1}</div></div>
-    </div>
-  `).join('');
+  list.innerHTML = '';
+  game.players.filter(function(p) { return !p.isHuman; }).forEach(function(p) {
+    const div = document.createElement('div');
+    div.className = 'player-option';
+    div.setAttribute('data-id', p.id);
+    div.innerHTML = '<div class="chat-avatar">' + p.name[0] + '</div><div><div style="font-weight:700;">' + p.name + '</div><div style="font-size:.75rem;color:var(--text-dim);">Player ' + (p.id+1) + '</div></div>';
+    div.addEventListener('click', function() {
+      document.querySelectorAll('.player-option').forEach(function(e) { e.classList.remove('selected'); });
+      div.classList.add('selected');
+      selectedAccuseId = p.id;
+    });
+    list.appendChild(div);
+  });
   document.getElementById('accuseModal').classList.add('active');
 }
 
-let selectedAccuseId = null;
-function selectAccuse(el){
-  document.querySelectorAll('.player-option').forEach(e=>e.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedAccuseId = parseInt(el.dataset.id);
+function closeAccuse() {
+  document.getElementById('accuseModal').classList.remove('active');
+  selectedAccuseId = null;
 }
 
-function closeAccuse(){ document.getElementById('accuseModal').classList.remove('active'); selectedAccuseId=null; }
-
-function submitAccuse(){
-  if(selectedAccuseId==null) return;
+function submitAccuse() {
+  if (selectedAccuseId === null) return;
   const target = game.players[selectedAccuseId];
-  addChat(0, game.players[0].name, `I accuse ${target.name} of being the Manipulator!`);
+  addChat(0, game.players[0].name, 'I accuse ' + target.name + ' of being the Manipulator!', false);
   game.players[0].accusations++;
   game.matchStats.accusations++;
-  if(target.role==='manipulator'){
+  if (target.role === 'manipulator') {
     game.players[0].correctAccusations++;
     game.matchStats.correctAccusations++;
-    addChat('system','Game Master',`✓ Correct accusation! ${target.name} IS the Manipulator.`,true);
+    addChat('system', 'Game Master', 'Correct accusation! ' + target.name + ' IS the Manipulator.', true);
   } else {
-    addChat('system','Game Master',`✗ ${target.name} is NOT the Manipulator. Be more careful.`,true);
+    addChat('system', 'Game Master', target.name + ' is NOT the Manipulator. Be more careful.', true);
   }
   closeAccuse();
-  // AI might react
-  setTimeout(()=>{
-    const bot = game.players.filter(p=>!p.isHuman)[Math.floor(Math.random()*(game.players.length-1))];
-    addChat(bot.id, bot.name, target.role==='manipulator' ? `I had my suspicions about ${target.name} too.` : `${target.name}? I don't think so.`);
+  setTimeout(function() {
+    const bots = game.players.filter(function(p) { return !p.isHuman; });
+    const bot = bots[Math.floor(Math.random() * bots.length)];
+    addChat(bot.id, bot.name, target.role === 'manipulator' ? 'I had my suspicions about ' + target.name + ' too.' : target.name + '? I don't think so.', false);
   }, 1000);
 }
 
 // ===================== VOTING =====================
-function enterVote(){
+function enterVote() {
   clearInterval(game.timer);
   game.phase = 'vote';
   document.getElementById('phaseBadge').textContent = 'VOTING';
-  document.getElementById('phaseBadge').className = 'phase-badge vote';
   showScreen('screenVote');
-  renderVoteGrid();
-}
 
-let selectedVote = null;
-function renderVoteGrid(){
   const grid = document.getElementById('voteGrid');
-  grid.innerHTML = COLORS.map(c=>`
-    <div class="vote-card ${c.key}" onclick="selectVote('${c.key}',this)">
-      ${c.emoji}
-      <div class="vote-label">${c.name}</div>
-    </div>
-  `).join('');
+  grid.innerHTML = '';
+  selectedVote = null;
+  document.getElementById('confirmVoteBtn').disabled = true;
+
+  COLORS.forEach(function(c) {
+    const div = document.createElement('div');
+    div.className = 'vote-card ' + c.key;
+    div.innerHTML = c.emoji + '<div class="vote-label">' + c.name + '</div>';
+    div.addEventListener('click', function() {
+      selectedVote = c.key;
+      document.querySelectorAll('.vote-card').forEach(function(card) { card.classList.remove('selected'); });
+      div.classList.add('selected');
+      document.getElementById('confirmVoteBtn').disabled = false;
+    });
+    grid.appendChild(div);
+  });
 }
 
-function selectVote(key, el){
-  selectedVote = key;
-  document.querySelectorAll('.vote-card').forEach(c=>c.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('confirmVoteBtn').disabled = false;
-}
-
-function confirmVote(){
-  if(!selectedVote) return;
+document.getElementById('confirmVoteBtn').addEventListener('click', function() {
+  if (!selectedVote) return;
   game.players[0].vote = selectedVote;
-  // AI votes
-  game.players.filter(p=>!p.isHuman).forEach(bot=>{
+  game.players.filter(function(p) { return !p.isHuman; }).forEach(function(bot) {
     bot.vote = generateAIVote(bot);
   });
   showReveal();
-}
+});
 
-function generateAIVote(bot){
+function generateAIVote(bot) {
   const safe = game.safeColor.key;
-  if(bot.role==='manipulator'){
-    // 80% chance they vote their target, 20% safe to blend in
-    if(Math.random()<.8) return bot.objective;
+  if (bot.role === 'manipulator') {
+    if (Math.random() < 0.8) return bot.objective;
     return safe;
   }
-  if(bot.role==='informant') return safe;
-  if(bot.role==='analyst'){
-    // 70% correct
-    return Math.random()<.7 ? safe : COLORS.filter(c=>c.key!==safe)[Math.floor(Math.random()*5)].key;
+  if (bot.role === 'informant') return safe;
+  if (bot.role === 'analyst') {
+    return Math.random() < 0.7 ? safe : COLORS.filter(function(c) { return c.key !== safe; })[Math.floor(Math.random() * 5)].key;
   }
-  if(bot.role==='deceiver'){
-    // Vote something other than safe to create confusion
-    return COLORS.filter(c=>c.key!==safe)[Math.floor(Math.random()*5)].key;
+  if (bot.role === 'deceiver') {
+    return COLORS.filter(function(c) { return c.key !== safe; })[Math.floor(Math.random() * 5)].key;
   }
-  if(bot.role==='chaos'){
-    // Random
-    return COLORS[Math.floor(Math.random()*6)].key;
+  if (bot.role === 'chaos') {
+    return COLORS[Math.floor(Math.random() * 6)].key;
   }
   return safe;
 }
 
 // ===================== REVEAL =====================
-function showReveal(){
+function showReveal() {
   game.phase = 'reveal';
   showScreen('screenReveal');
 
   const safe = game.safeColor;
-  document.getElementById('revealSafe').innerHTML = `${safe.emoji} <span style="color:${safe.hex}">${safe.name} WAS SAFE</span>`;
+  document.getElementById('revealSafe').innerHTML = safe.emoji + ' <span style="color:' + safe.hex + '">' + safe.name + ' WAS SAFE</span>';
 
-  // Count votes
   const counts = {};
-  COLORS.forEach(c=>counts[c.key]=0);
-  game.players.forEach(p=>{ if(p.vote) counts[p.vote]++; });
+  COLORS.forEach(function(c) { counts[c.key] = 0; });
+  game.players.forEach(function(p) { if (p.vote) counts[p.vote]++; });
 
-  // Results pills
   const resultsDiv = document.getElementById('voteResults');
-  resultsDiv.innerHTML = COLORS.map(c=>{
+  resultsDiv.innerHTML = '';
+  COLORS.forEach(function(c) {
     const count = counts[c.key];
-    if(count===0) return '';
-    return `<div class="result-pill"><div class="dot" style="background:${c.hex}"></div>${c.emoji} ${c.name}: ${count} vote${count>1?'s':''}</div>`;
-  }).join('');
+    if (count === 0) return;
+    const div = document.createElement('div');
+    div.className = 'result-pill';
+    div.innerHTML = '<div class="dot" style="background:' + c.hex + '"></div>' + c.emoji + ' ' + c.name + ': ' + count + ' vote' + (count > 1 ? 's' : '');
+    resultsDiv.appendChild(div);
+  });
 
-  // Player reveal cards
   const grid = document.getElementById('playerRevealGrid');
-  grid.innerHTML = game.players.map(p=>{
+  grid.innerHTML = '';
+  game.players.forEach(function(p) {
     const r = ROLES[p.role];
-    const v = COLORS.find(c=>c.key===p.vote);
-    const isCorrect = p.vote===safe.key;
-    const isWinner = (p.role==='manipulator' && counts[p.objective] >= Math.ceil(game.players.length/2)) ||
-                     (p.role!=='manipulator' && isCorrect);
+    const v = COLORS.find(function(c) { return c.key === p.vote; });
+    const isCorrect = p.vote === safe.key;
+    const isWinner = (p.role === 'manipulator' && counts[p.objective] >= Math.ceil(game.players.length / 2)) || (p.role !== 'manipulator' && isCorrect);
     const cardClass = isWinner ? 'winner' : (p.isHuman ? 'loser' : '');
     const check = isWinner ? '✓' : '✗';
 
-    if(p.isHuman && isCorrect) game.matchStats.correctVotes++;
-    if(p.role==='manipulator' && counts[p.objective] >= Math.ceil(game.players.length/2)){
+    if (p.isHuman && isCorrect) game.matchStats.correctVotes++;
+    if (p.role === 'manipulator' && counts[p.objective] >= Math.ceil(game.players.length / 2)) {
       game.matchStats.manipSuccess++;
     }
 
-    return `
-      <div class="reveal-card ${cardClass}">
-        <div class="r-name">${p.isHuman ? '👤 ' : ''}${p.name}</div>
-        <div class="r-role">${r.icon} ${r.name}</div>
-        <div class="r-obj">${p.secret.substring(0,50)}...</div>
-        <div class="r-vote">Voted: ${v?v.emoji+' '+v.name:'?'} <span style="margin-left:auto;color:${isWinner?'var(--green)':'var(--red)'};font-weight:700;">${check}</span></div>
-      </div>
-    `;
-  }).join('');
+    const div = document.createElement('div');
+    div.className = 'reveal-card ' + cardClass;
+    div.innerHTML = '<div class="r-name">' + (p.isHuman ? '👤 ' : '') + p.name + '</div><div class="r-role">' + r.icon + ' ' + r.name + '</div><div class="r-obj">' + p.secret.substring(0, 50) + '...</div><div class="r-vote">Voted: ' + (v ? v.emoji + ' ' + v.name : '?') + '<span style="margin-left:auto;color:' + (isWinner ? 'var(--green)' : 'var(--red)') + ';font-weight:700;">' + check + '</span></div>';
+    grid.appendChild(div);
+  });
 
   game.matchStats.totalRounds++;
 
   const btn = document.getElementById('nextRoundBtn');
-  if(game.round >= game.maxRounds){
+  if (game.round >= game.maxRounds) {
     btn.textContent = 'See Final Results';
     btn.onclick = showFinal;
   } else {
@@ -1061,80 +1100,62 @@ function showReveal(){
   }
 }
 
-function nextRound(){
+function nextRound() {
   game.round++;
   document.getElementById('hudRound').textContent = game.round;
   document.getElementById('phaseBadge').textContent = 'DISCUSSION';
-  document.getElementById('phaseBadge').className = 'phase-badge discuss';
 
-  // Maybe chaos event
-  if(game.round>=3 && Math.random()<.3){
+  if (game.round >= 3 && Math.random() < 0.3) {
     triggerChaosEvent();
   }
 
-  // Reassign secrets for new round (keep roles)
-  game.players.forEach(p=>generateSecret(p));
-
-  // Show role again briefly
+  game.players.forEach(function(p) { generateSecret(p); });
   renderRoleCard();
   showScreen('screenRole');
 }
 
-function triggerChaosEvent(){
+function triggerChaosEvent() {
   const events = [
-    {text:'🌈 COLOR SWAP! Two colors exchanged properties!', effect:()=>{
-      const temp = game.safeColor;
-      game.safeColor = game.dangerousColor;
-      game.dangerousColor = temp;
-    }},
-    {text:'⏱️ TIME ATTACK! Discussion time halved!', effect:()=>{ game.timeLeft = 45; }},
-    {text:'🎭 SECRET SHIFT! One player's objective changed!', effect:()=>{
-      const bot = game.players.filter(p=>!p.isHuman)[0];
-      bot.role = ['manipulator','deceiver','chaos'][Math.floor(Math.random()*3)];
-      generateSecret(bot);
-    }}
+    { text: '🌈 COLOR SWAP! Two colors exchanged properties!', effect: function() { var temp = game.safeColor; game.safeColor = game.dangerousColor; game.dangerousColor = temp; } },
+    { text: '⏱️ TIME ATTACK! Discussion time halved!', effect: function() { game.timeLeft = 45; } },
+    { text: '🎭 SECRET SHIFT! One player's objective changed!', effect: function() { var bots = game.players.filter(function(p) { return !p.isHuman; }); var bot = bots[0]; bot.role = ['manipulator','deceiver','chaos'][Math.floor(Math.random() * 3)]; generateSecret(bot); } }
   ];
-  const ev = events[Math.floor(Math.random()*events.length)];
-  game.chaosEvent = ev;
+  const ev = events[Math.floor(Math.random() * events.length)];
   const banner = document.getElementById('chaosBanner');
   banner.textContent = ev.text;
   banner.classList.add('show');
   ev.effect();
-  setTimeout(()=>banner.classList.remove('show'), 4000);
+  setTimeout(function() { banner.classList.remove('show'); }, 4000);
 }
 
 // ===================== FINAL =====================
-function showFinal(){
+function showFinal() {
   showScreen('screenFinal');
   document.getElementById('gameHud').style.display = 'none';
 
   const stats = game.matchStats;
   const total = stats.totalRounds || 1;
-  const accuracy = Math.round((stats.correctVotes/total)*100);
-  const accAccuracy = stats.accusations>0 ? Math.round((stats.correctAccusations/stats.accusations)*100) : 0;
-  const social = Math.round((accuracy + accAccuracy)/2);
+  const accuracy = Math.round((stats.correctVotes / total) * 100);
+  const accAccuracy = stats.accusations > 0 ? Math.round((stats.correctAccusations / stats.accusations) * 100) : 0;
+  const social = Math.round((accuracy + accAccuracy) / 2);
 
   let rank = 'Color Rookie';
-  if(social>=80) rank = 'Conspiracy Architect';
-  else if(social>=60) rank = 'Psychological Mastermind';
-  else if(social>=40) rank = 'Master Manipulator';
-  else if(social>=20) rank = 'Social Strategist';
+  if (social >= 80) rank = 'Conspiracy Architect';
+  else if (social >= 60) rank = 'Psychological Mastermind';
+  else if (social >= 40) rank = 'Master Manipulator';
+  else if (social >= 20) rank = 'Social Strategist';
 
-  const score = (stats.correctVotes*1000) + (stats.correctAccusations*1500) + (social*50);
+  const score = (stats.correctVotes * 1000) + (stats.correctAccusations * 1500) + (social * 50);
 
   document.getElementById('finalRank').textContent = rank;
   document.getElementById('finalScore').textContent = score.toLocaleString();
-  document.getElementById('statCorrect').textContent = `${stats.correctVotes}/${total}`;
-  document.getElementById('statAccuse').textContent = `${stats.correctAccusations}/${stats.accusations}`;
-  document.getElementById('statManip').textContent = `${Math.round((stats.manipSuccess/total)*100)}%`;
-  document.getElementById('statSocial').textContent = `${social}%`;
+  document.getElementById('statCorrect').textContent = stats.correctVotes + '/' + total;
+  document.getElementById('statAccuse').textContent = stats.correctAccusations + '/' + stats.accusations;
+  document.getElementById('statManip').textContent = Math.round((stats.manipSuccess / total) * 100) + '%';
+  document.getElementById('statSocial').textContent = social + '%';
 }
 
-// ===================== UTILS =====================
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
+console.log('Color Conspiracy loaded successfully');
 </script>
 </body>
 </html>
