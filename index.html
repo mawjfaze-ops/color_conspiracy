@@ -2,1160 +2,942 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Color Conspiracy</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Space+Grotesk:wght@400;600;700&display=swap');
-
-:root {
-  --bg: #0a0a12;
-  --surface: rgba(255,255,255,0.04);
-  --border: rgba(255,255,255,0.08);
-  --text: #e8e8f0;
-  --text-dim: #8888a0;
-  --red: #ff3366;
-  --blue: #3388ff;
-  --green: #00e676;
-  --purple: #b829dd;
-  --yellow: #ffcc00;
-  --orange: #ff8844;
-  --cyan: #00f0ff;
-  --pink: #ff66aa;
-  --glass: rgba(20,20,35,0.85);
-}
-
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
+* { margin:0; padding:0; box-sizing:border-box; }
 body {
-  font-family:'Outfit',sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
-  overflow-x:hidden;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #0a0a12;
+  color: #e8e8f0;
+  min-height: 100vh;
 }
 
+/* Screens */
 .screen {
-  position:fixed; inset:0;
-  display:none;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-  overflow-y:auto;
-  z-index:1;
+  display: none;
+  min-height: 100vh;
+  padding: 20px;
 }
-.screen.active { display:flex; }
+.screen.active { display: block; }
 
 /* Intro */
 .intro-title {
-  font-family:'Space Grotesk',sans-serif;
-  font-size:clamp(2.5rem,8vw,5rem);
-  font-weight:900;
-  background:linear-gradient(135deg,var(--purple),var(--pink),var(--cyan));
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
-  text-align:center;
-  letter-spacing:-1px;
+  font-size: clamp(2rem, 8vw, 4rem);
+  font-weight: 900;
+  text-align: center;
+  background: linear-gradient(135deg, #b829dd, #ff66aa, #00f0ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-top: 40px;
 }
 .intro-tagline {
-  font-size:1.1rem;
-  color:var(--text-dim);
-  text-align:center;
-  margin:15px 0 40px;
-  max-width:500px;
-  line-height:1.6;
+  text-align: center;
+  color: #8888a0;
+  margin: 10px 0 30px;
 }
-.glass-card {
-  background:var(--glass);
-  backdrop-filter:blur(20px);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:30px;
-  width:100%;
-  max-width:480px;
+.card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 420px;
+  margin: 0 auto;
 }
-.glass-card h3 {
-  font-family:'Space Grotesk',sans-serif;
-  font-size:1.1rem;
-  margin-bottom:20px;
-  color:var(--cyan);
-  text-transform:uppercase;
-  letter-spacing:2px;
+.card h3 {
+  color: #00f0ff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
 }
 input[type="text"] {
-  width:100%;
-  background:rgba(255,255,255,.05);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:14px 18px;
-  color:var(--text);
-  font-size:1rem;
-  font-family:'Outfit',sans-serif;
-  outline:none;
-  margin-bottom:15px;
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 12px;
 }
-input[type="text"]:focus { border-color:var(--purple); }
-
 .btn {
-  font-family:'Space Grotesk',sans-serif;
-  font-weight:700;
-  font-size:1rem;
-  padding:14px 32px;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
-  text-transform:uppercase;
-  letter-spacing:1.5px;
-  transition:all .25s ease;
-  display:inline-block;
-  text-align:center;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 8px;
 }
 .btn-primary {
-  background:linear-gradient(135deg,var(--purple),var(--pink));
-  color:#fff;
-  width:100%;
+  background: linear-gradient(135deg, #b829dd, #ff66aa);
+  color: #fff;
 }
-.btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(184,41,221,.4); }
-.btn-primary:active { transform:scale(.97); }
-
+.btn-primary:hover { opacity: 0.9; }
 .player-count {
-  display:flex;
-  gap:8px;
-  justify-content:center;
-  margin:15px 0;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 12px 0;
 }
 .count-btn {
-  width:44px;
-  height:44px;
-  border-radius:12px;
-  background:var(--surface);
-  border:1px solid var(--border);
-  color:var(--text);
-  font-family:'Space Grotesk',sans-serif;
-  font-weight:700;
-  font-size:1.1rem;
-  cursor:pointer;
-  transition:all .2s;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
 }
-.count-btn:hover { border-color:var(--purple); }
 .count-btn.selected {
-  background:linear-gradient(135deg,var(--purple),var(--pink));
-  border-color:transparent;
-  color:#fff;
+  background: linear-gradient(135deg, #b829dd, #ff66aa);
+  border: none;
 }
 
 /* Role */
-.role-reveal { text-align:center; max-width:600px; width:100%; }
 .role-card {
-  background:var(--glass);
-  backdrop-filter:blur(20px);
-  border:2px solid var(--border);
-  border-radius:24px;
-  padding:40px 30px;
-  margin:20px 0;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 500px;
+  margin: 40px auto;
+  text-align: center;
 }
-.role-icon { font-size:4rem; margin-bottom:15px; }
-.role-name {
-  font-family:'Space Grotesk',sans-serif;
-  font-size:1.8rem;
-  font-weight:700;
-  margin-bottom:10px;
-}
-.role-desc { color:var(--text-dim); font-size:.95rem; line-height:1.6; margin-bottom:25px; }
+.role-icon { font-size: 3rem; margin-bottom: 10px; }
+.role-name { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
+.role-desc { color: #8888a0; margin-bottom: 20px; }
 .secret-box {
-  background:rgba(0,0,0,.4);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:16px;
-  padding:25px;
-  margin-top:20px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: left;
 }
 .secret-label {
-  font-size:.7rem;
-  text-transform:uppercase;
-  letter-spacing:3px;
-  color:var(--cyan);
-  margin-bottom:10px;
+  color: #00f0ff;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
 }
-.secret-text { font-size:1.3rem; font-weight:600; line-height:1.5; }
+.secret-text { font-size: 1.1rem; font-weight: 600; }
 
 /* HUD */
-.game-hud {
-  position:fixed;
-  top:0; left:0; right:0;
-  z-index:100;
-  background:linear-gradient(to bottom,rgba(10,10,18,.95),rgba(10,10,18,.7));
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:12px 20px;
-  border-bottom:1px solid var(--border);
+.hud {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  background: rgba(10,10,18,0.95);
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  z-index: 100;
+  justify-content: space-between;
+  align-items: center;
 }
-.hud-round {
-  font-family:'Space Grotesk',sans-serif;
-  font-size:.9rem;
-  color:var(--text-dim);
-  text-transform:uppercase;
-}
-.hud-round span { color:var(--cyan); font-weight:700; }
-.hud-timer {
-  font-family:'Space Grotesk',sans-serif;
-  font-size:1.4rem;
-  font-weight:700;
-  color:var(--cyan);
-}
-.hud-timer.warning { color:var(--yellow); }
-.hud-timer.danger { color:var(--red); }
-.phase-badge {
-  font-size:.65rem;
-  text-transform:uppercase;
-  letter-spacing:2px;
-  padding:6px 14px;
-  border-radius:20px;
-  background:var(--surface);
-  border:1px solid var(--border);
-  color:var(--text-dim);
-}
+.hud.active { display: flex; }
+.hud-timer { font-size: 1.3rem; font-weight: 700; color: #00f0ff; }
 
 /* Colors */
 .color-bar {
-  display:flex;
-  gap:10px;
-  justify-content:center;
-  margin:80px 0 20px;
-  flex-wrap:wrap;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 80px 0 20px;
+  flex-wrap: wrap;
 }
 .color-pill {
-  width:56px;
-  height:56px;
-  border-radius:16px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:1.6rem;
-  box-shadow:0 4px 20px rgba(0,0,0,.3);
+  width: 50px; height: 50px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
 }
-.color-pill.red { background:linear-gradient(135deg,var(--red),#ff5588); }
-.color-pill.blue { background:linear-gradient(135deg,var(--blue),#55aaff); }
-.color-pill.green { background:linear-gradient(135deg,var(--green),#55ff99); }
-.color-pill.purple { background:linear-gradient(135deg,var(--purple),#dd55ee); }
-.color-pill.yellow { background:linear-gradient(135deg,var(--yellow),#ffdd44); }
-.color-pill.orange { background:linear-gradient(135deg,var(--orange),#ffaa66); }
+.red { background: linear-gradient(135deg, #ff3366, #ff5588); }
+.blue { background: linear-gradient(135deg, #3388ff, #55aaff); }
+.green { background: linear-gradient(135deg, #00e676, #55ff99); }
+.purple { background: linear-gradient(135deg, #b829dd, #dd55ee); }
+.yellow { background: linear-gradient(135deg, #ffcc00, #ffdd44); }
+.orange { background: linear-gradient(135deg, #ff8844, #ffaa66); }
 
 /* Chat */
-.chat-container {
-  flex:1;
-  width:100%;
-  max-width:700px;
-  margin:0 auto;
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  background:var(--glass);
-  border:1px solid var(--border);
-  border-radius:20px;
-  margin-top:10px;
-  margin-bottom:10px;
+.chat-box {
+  max-width: 700px;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  overflow: hidden;
 }
 .chat-messages {
-  flex:1;
-  overflow-y:auto;
-  padding:15px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+  height: 300px;
+  overflow-y: auto;
+  padding: 12px;
 }
-.chat-msg { display:flex; gap:10px; align-items:flex-start; }
+.chat-msg {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  align-items: flex-start;
+}
 .chat-avatar {
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:1rem;
-  font-weight:700;
-  background:var(--surface);
-  border:1px solid var(--border);
-  flex-shrink:0;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
 }
-.chat-avatar.you { background:linear-gradient(135deg,var(--purple),var(--pink)); border:none; }
+.chat-avatar.you { background: linear-gradient(135deg, #b829dd, #ff66aa); }
 .chat-bubble {
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:10px 14px;
-  max-width:80%;
-  font-size:.9rem;
-  line-height:1.5;
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 8px 12px;
+  max-width: 80%;
+  font-size: 0.9rem;
 }
-.chat-bubble .name { font-size:.75rem; font-weight:700; color:var(--cyan); margin-bottom:2px; }
-.chat-bubble.system {
-  background:rgba(0,240,255,.08);
-  border-color:rgba(0,240,255,.2);
-  text-align:center;
-  max-width:100%;
-  width:100%;
-}
+.chat-bubble .name { font-size: 0.7rem; color: #00f0ff; font-weight: 700; margin-bottom: 2px; }
+.chat-bubble.system { background: rgba(0,240,255,0.06); width: 100%; max-width: 100%; text-align: center; }
 .quick-actions {
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  padding:10px 15px;
-  border-top:1px solid var(--border);
-  background:rgba(0,0,0,.2);
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 10px;
+  border-top: 1px solid rgba(255,255,255,0.08);
 }
 .quick-btn {
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:8px 16px;
-  color:var(--text);
-  font-size:.8rem;
-  cursor:pointer;
-  transition:all .2s;
-  font-family:'Outfit',sans-serif;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 6px 14px;
+  color: #fff;
+  font-size: 0.8rem;
+  cursor: pointer;
 }
-.quick-btn:hover { border-color:var(--purple); background:rgba(184,41,221,.1); }
-.quick-btn.accuse { border-color:var(--red); color:var(--red); }
-
-/* Modal */
-.modal-overlay {
-  position:fixed;
-  inset:0;
-  z-index:200;
-  background:rgba(0,0,0,.7);
-  display:none;
-  align-items:center;
-  justify-content:center;
-}
-.modal-overlay.active { display:flex; }
-.modal-box {
-  background:var(--glass);
-  border:1px solid var(--border);
-  border-radius:24px;
-  padding:30px;
-  max-width:400px;
-  width:90%;
-  text-align:center;
-}
-.player-option {
-  display:flex;
-  align-items:center;
-  gap:12px;
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:12px 16px;
-  cursor:pointer;
-  transition:all .2s;
-  text-align:left;
-  margin:8px 0;
-}
-.player-option:hover { border-color:var(--purple); }
-.player-option.selected { border-color:var(--red); background:rgba(255,51,102,.1); }
+.quick-btn:hover { border-color: #b829dd; }
 
 /* Vote */
 .vote-grid {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:15px;
-  max-width:500px;
-  width:100%;
-  margin:20px auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-width: 400px;
+  margin: 20px auto;
 }
 .vote-card {
-  aspect-ratio:1;
-  border-radius:20px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  font-size:2.5rem;
-  cursor:pointer;
-  transition:all .3s ease;
-  border:3px solid transparent;
+  aspect-ratio: 1;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 0.2s;
 }
-.vote-card:hover { transform:scale(1.08); border-color:rgba(255,255,255,.5); }
-.vote-card.selected { border-color:#fff; transform:scale(1.12); }
-.vote-card.red { background:linear-gradient(135deg,var(--red),#ff5588); color:#fff; }
-.vote-card.blue { background:linear-gradient(135deg,var(--blue),#55aaff); color:#fff; }
-.vote-card.green { background:linear-gradient(135deg,var(--green),#55ff99); color:#000; }
-.vote-card.purple { background:linear-gradient(135deg,var(--purple),#dd55ee); color:#fff; }
-.vote-card.yellow { background:linear-gradient(135deg,var(--yellow),#ffdd44); color:#000; }
-.vote-card.orange { background:linear-gradient(135deg,var(--orange),#ffaa66); color:#000; }
-.vote-label { font-size:.8rem; font-weight:700; text-transform:uppercase; margin-top:8px; letter-spacing:1px; }
+.vote-card:hover { transform: scale(1.05); }
+.vote-card.selected { border-color: #fff; transform: scale(1.1); }
 
 /* Reveal */
-.reveal-container { max-width:600px; width:100%; text-align:center; }
-.reveal-title { font-family:'Space Grotesk',sans-serif; font-size:2rem; margin-bottom:10px; }
-.reveal-safe { font-size:3rem; margin:20px 0; }
-.vote-results { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:20px 0; }
-.result-pill {
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:30px;
-  padding:10px 20px;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-size:.9rem;
+.reveal-safe { font-size: 2.5rem; text-align: center; margin: 20px 0; }
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  max-width: 600px;
+  margin: 20px auto;
 }
-.result-pill .dot { width:14px; height:14px; border-radius:50%; }
-.player-reveal-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
-  gap:12px;
-  margin:20px 0;
-  text-align:left;
+.result-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 0.85rem;
 }
-.reveal-card {
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:16px;
-}
-.reveal-card .r-name { font-weight:700; font-size:.9rem; margin-bottom:4px; }
-.reveal-card .r-role { font-size:.75rem; color:var(--text-dim); margin-bottom:4px; }
-.reveal-card .r-obj { font-size:.7rem; color:var(--cyan); }
-.reveal-card .r-vote {
-  margin-top:8px;
-  padding-top:8px;
-  border-top:1px solid var(--border);
-  font-size:.8rem;
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-.reveal-card.winner { border-color:var(--green); background:rgba(0,230,118,.08); }
-.reveal-card.loser { border-color:var(--red); background:rgba(255,51,102,.05); }
+.result-card.winner { border-color: #00e676; }
+.result-card.loser { border-color: #ff3366; }
 
 /* Final */
-.final-title {
-  font-family:'Space Grotesk',sans-serif;
-  font-size:2.5rem;
-  background:linear-gradient(135deg,var(--purple),var(--pink),var(--cyan));
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  background-clip:text;
-  margin-bottom:10px;
-}
+.final-score { font-size: 3rem; font-weight: 900; text-align: center; margin: 20px 0; }
 .rank-badge {
-  display:inline-block;
-  padding:10px 30px;
-  border-radius:30px;
-  font-family:'Space Grotesk',sans-serif;
-  font-weight:700;
-  font-size:1.1rem;
-  margin:10px 0;
-  border:2px solid var(--cyan);
-  color:var(--cyan);
+  text-align: center;
+  padding: 8px 24px;
+  border: 2px solid #00f0ff;
+  border-radius: 24px;
+  color: #00f0ff;
+  display: inline-block;
+  font-weight: 700;
 }
-.score-big {
-  font-family:'Space Grotesk',sans-serif;
-  font-size:3.5rem;
-  font-weight:900;
-  margin:15px 0;
-}
-.stats-row {
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-  max-width:500px;
-  width:100%;
-  margin:20px auto;
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  max-width: 400px;
+  margin: 20px auto;
 }
 .stat-box {
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:16px;
-  text-align:center;
+  background: rgba(255,255,255,0.04);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
 }
-.stat-box .s-label { font-size:.7rem; text-transform:uppercase; letter-spacing:1px; color:var(--text-dim); }
-.stat-box .s-val { font-family:'Space Grotesk',sans-serif; font-size:1.4rem; font-weight:700; margin-top:4px; }
+.stat-box .label { font-size: 0.7rem; color: #8888a0; text-transform: uppercase; }
+.stat-box .value { font-size: 1.3rem; font-weight: 700; margin-top: 4px; }
 
-/* Chaos */
-.chaos-banner {
-  position:fixed;
-  top:60px;
-  left:50%;
-  transform:translateX(-50%) translateY(-150px);
-  z-index:150;
-  background:linear-gradient(135deg,var(--red),var(--orange));
-  color:#fff;
-  padding:12px 30px;
-  border-radius:30px;
-  font-family:'Space Grotesk',sans-serif;
-  font-weight:700;
-  font-size:1rem;
-  transition:transform .5s ease;
-  text-align:center;
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
 }
-.chaos-banner.show { transform:translateX(-50%) translateY(0); }
-
-.btn-secondary {
-  background:var(--surface);
-  border:1px solid var(--border);
-  color:var(--text);
-  padding:15px 40px;
-  font-size:1rem;
+.modal.active { display: flex; }
+.modal-box {
+  background: var(--glass);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 360px;
+  width: 90%;
 }
-.btn-secondary:hover { border-color:var(--cyan); background:rgba(0,240,255,.08); }
+.player-option {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 6px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.player-option:hover { border-color: #b829dd; }
+.player-option.selected { border-color: #ff3366; background: rgba(255,51,102,0.1); }
 
-@media(max-width:600px){
-  .vote-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
-  .vote-card { font-size:2rem; }
-  .color-pill { width:44px; height:44px; font-size:1.3rem; }
-  .chat-bubble { max-width:90%; font-size:.85rem; }
-  .player-reveal-grid { grid-template-columns:1fr; }
-  .stats-row { grid-template-columns:1fr; }
+.center { text-align: center; }
+.mt-4 { margin-top: 16px; }
+.mb-2 { margin-bottom: 8px; }
+.flex { display: flex; }
+.gap-2 { gap: 8px; }
+.justify-center { justify-content: center; }
+
+@media (max-width: 500px) {
+  .vote-grid { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 <base target="_blank">
 </head>
 <body>
 
-<div class="game-hud" id="gameHud" style="display:none;">
-  <div class="hud-left"><div class="hud-round">Round <span id="hudRound">1</span>/5</div></div>
-  <div class="hud-center"><div class="phase-badge" id="phaseBadge">DISCUSSION</div></div>
-  <div class="hud-right"><div class="hud-timer" id="hudTimer">90</div></div>
-</div>
+<!-- DEBUG -->
+<div id="debug" style="position:fixed;bottom:10px;right:10px;background:rgba(0,0,0,0.8);color:#0f0;padding:8px 12px;border-radius:8px;font-size:12px;z-index:999;display:none;"></div>
 
-<div class="chaos-banner" id="chaosBanner"></div>
+<!-- HUD -->
+<div class="hud" id="hud">
+  <div>Round <span id="hudRound" style="color:#00f0ff;font-weight:700;">1</span>/5</div>
+  <div class="hud-timer" id="hudTimer">90</div>
+</div>
 
 <!-- INTRO -->
 <div class="screen active" id="screenIntro">
   <div class="intro-title">Color Conspiracy</div>
   <div class="intro-tagline">Everyone sees the colors. Nobody sees the whole truth.</div>
-  <div class="glass-card">
+  <div class="card">
     <h3>Game Setup</h3>
     <input type="text" id="playerName" placeholder="Your name" value="You" maxlength="12">
-    <div style="text-align:center; margin-bottom:10px; font-size:.85rem; color:var(--text-dim);">Players (including you + AI)</div>
-    <div class="player-count" id="playerCount">
+    <div style="text-align:center;color:#8888a0;font-size:0.85rem;margin-bottom:8px;">Players (you + AI bots)</div>
+    <div class="player-count">
       <button class="count-btn" data-n="4">4</button>
       <button class="count-btn selected" data-n="5">5</button>
       <button class="count-btn" data-n="6">6</button>
       <button class="count-btn" data-n="7">7</button>
       <button class="count-btn" data-n="8">8</button>
     </div>
-    <button class="btn btn-primary" id="startBtn">Start Match</button>
+    <button class="btn btn-primary" id="btnStart">Start Match</button>
   </div>
 </div>
 
 <!-- ROLE -->
 <div class="screen" id="screenRole">
-  <div class="role-reveal">
-    <div style="font-size:.8rem; text-transform:uppercase; letter-spacing:3px; color:var(--text-dim); margin-bottom:10px;">Your Secret Role</div>
-    <div class="role-card" id="roleCard">
-      <div class="role-icon" id="roleIcon">🕵️</div>
-      <div class="role-name" id="roleName">The Informant</div>
-      <div class="role-desc" id="roleDesc">You receive genuine information.</div>
-      <div class="secret-box">
-        <div class="secret-label">🔒 Secret Information</div>
-        <div class="secret-text" id="secretText">Loading...</div>
-      </div>
+  <div class="role-card">
+    <div style="font-size:0.75rem;color:#8888a0;text-transform:uppercase;letter-spacing:3px;margin-bottom:10px;">Your Secret Role</div>
+    <div class="role-icon" id="roleIcon">?</div>
+    <div class="role-name" id="roleName">Loading...</div>
+    <div class="role-desc" id="roleDesc">...</div>
+    <div class="secret-box">
+      <div class="secret-label">Secret Information</div>
+      <div class="secret-text" id="secretText">...</div>
     </div>
-    <button class="btn btn-primary" id="enterDiscussBtn" style="margin-top:20px;">Enter Discussion</button>
+    <button class="btn btn-primary" id="btnEnterDiscuss" style="margin-top:20px;">Enter Discussion</button>
   </div>
 </div>
 
 <!-- GAME -->
 <div class="screen" id="screenGame">
   <div class="color-bar" id="colorBar"></div>
-  <div class="chat-container">
+  <div class="chat-box">
     <div class="chat-messages" id="chatMessages"></div>
     <div class="quick-actions">
       <button class="quick-btn" data-msg="I think the safe color is...">I think...</button>
       <button class="quick-btn" data-msg="Why do you say that?">Why?</button>
-      <button class="quick-btn" data-msg="I do not trust that claim.">Doubt</button>
-      <button class="quick-btn" data-msg="I have some information...">Hint</button>
-      <button class="quick-btn accuse" id="accuseBtn">Accuse</button>
-      <button class="quick-btn" data-msg="Let us vote soon.">Vote now</button>
+      <button class="quick-btn" data-msg="I do not trust that.">Doubt</button>
+      <button class="quick-btn" data-msg="I have info...">Hint</button>
+      <button class="quick-btn" id="btnAccuse" style="border-color:#ff3366;color:#ff3366;">Accuse</button>
+      <button class="quick-btn" data-msg="Vote now">Vote now</button>
     </div>
   </div>
 </div>
 
 <!-- VOTE -->
 <div class="screen" id="screenVote">
-  <div style="text-align:center; margin-top:60px;">
-    <div style="font-family:'Space Grotesk',sans-serif; font-size:1.5rem; margin-bottom:10px;">Secret Vote</div>
-    <div style="color:var(--text-dim); margin-bottom:30px;">Choose the color you believe is safe.</div>
+  <div class="center" style="margin-top:60px;">
+    <div style="font-size:1.3rem;font-weight:700;margin-bottom:8px;">Secret Vote</div>
+    <div style="color:#8888a0;margin-bottom:24px;">Choose the color you believe is safe.</div>
     <div class="vote-grid" id="voteGrid"></div>
-    <button class="btn btn-primary" style="margin-top:30px;" id="confirmVoteBtn" disabled>Confirm Vote</button>
+    <button class="btn btn-primary" style="max-width:200px;" id="btnConfirmVote" disabled>Confirm Vote</button>
   </div>
 </div>
 
 <!-- REVEAL -->
 <div class="screen" id="screenReveal">
-  <div class="reveal-container">
-    <div class="reveal-title" id="revealTitle">The Truth Is Revealed</div>
+  <div class="center" style="max-width:600px;margin:0 auto;">
+    <div style="font-size:1.5rem;font-weight:700;margin-top:40px;margin-bottom:10px;">The Truth Is Revealed</div>
     <div class="reveal-safe" id="revealSafe"></div>
-    <div class="vote-results" id="voteResults"></div>
-    <div style="font-size:.8rem; text-transform:uppercase; letter-spacing:2px; color:var(--text-dim); margin:20px 0 10px;">Player Roles &amp; Votes</div>
-    <div class="player-reveal-grid" id="playerRevealGrid"></div>
-    <button class="btn btn-primary" style="margin-top:20px;" id="nextRoundBtn">Next Round</button>
+    <div id="voteResults" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px 0;"></div>
+    <div style="font-size:0.75rem;color:#8888a0;text-transform:uppercase;letter-spacing:2px;margin:20px 0 10px;">Player Roles & Votes</div>
+    <div class="results-grid" id="resultsGrid"></div>
+    <button class="btn btn-primary" style="max-width:200px;margin-top:20px;" id="btnNextRound">Next Round</button>
   </div>
 </div>
 
 <!-- FINAL -->
 <div class="screen" id="screenFinal">
-  <div style="text-align:center; max-width:600px; width:100%;">
-    <div class="final-title">Match Complete</div>
-    <div class="rank-badge" id="finalRank">Social Strategist</div>
-    <div class="score-big" id="finalScore">0</div>
-    <div class="stats-row">
-      <div class="stat-box"><div class="s-label">Correct Votes</div><div class="s-val" id="statCorrect">0/5</div></div>
-      <div class="stat-box"><div class="s-label">Accusations</div><div class="s-val" id="statAccuse">0</div></div>
-      <div class="stat-box"><div class="s-label">Manipulation</div><div class="s-val" id="statManip">0%</div></div>
-      <div class="stat-box"><div class="s-label">Social Reading</div><div class="s-val" id="statSocial">0%</div></div>
+  <div class="center" style="max-width:500px;margin:0 auto;padding-top:40px;">
+    <div style="font-size:2rem;font-weight:900;background:linear-gradient(135deg,#b829dd,#ff66aa,#00f0ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Match Complete</div>
+    <div class="rank-badge" style="margin:16px auto;display:block;" id="finalRank">Color Rookie</div>
+    <div class="final-score" id="finalScore">0</div>
+    <div class="stats-grid">
+      <div class="stat-box"><div class="label">Correct Votes</div><div class="value" id="statCorrect">0/5</div></div>
+      <div class="stat-box"><div class="label">Accusations</div><div class="value" id="statAccuse">0</div></div>
+      <div class="stat-box"><div class="label">Manipulation</div><div class="value" id="statManip">0%</div></div>
+      <div class="stat-box"><div class="label">Social Reading</div><div class="value" id="statSocial">0%</div></div>
     </div>
-    <div style="display:flex; gap:15px; justify-content:center; margin-top:30px;">
-      <button class="btn btn-primary" onclick="location.reload()">Play Again</button>
+    <div class="flex gap-2 justify-center mt-4">
+      <button class="btn btn-primary" style="max-width:160px;" onclick="location.reload()">Play Again</button>
     </div>
   </div>
 </div>
 
 <!-- ACCUSE MODAL -->
-<div class="modal-overlay" id="accuseModal">
+<div class="modal" id="modalAccuse">
   <div class="modal-box">
-    <h3 style="font-family:'Space Grotesk',sans-serif; margin-bottom:20px;">Accuse a Player</h3>
-    <p style="color:var(--text-dim); font-size:.9rem; margin-bottom:15px;">Who do you think is manipulating the group?</p>
-    <div class="player-list" id="accuseList"></div>
-    <button class="btn btn-primary" style="margin-top:15px;" id="submitAccuseBtn">Accuse</button>
-    <button class="btn btn-secondary" style="margin-top:10px;" id="cancelAccuseBtn">Cancel</button>
+    <h3 style="margin-bottom:16px;">Accuse a Player</h3>
+    <p style="color:#8888a0;font-size:0.9rem;margin-bottom:12px;">Who is the Manipulator?</p>
+    <div id="accuseList"></div>
+    <button class="btn btn-primary" id="btnSubmitAccuse" style="margin-top:12px;">Accuse</button>
+    <button class="btn" style="background:rgba(255,255,255,0.05);margin-top:8px;" id="btnCancelAccuse">Cancel</button>
   </div>
 </div>
 
 <script>
-// ===================== DATA =====================
-const COLORS = [
-  {key:'red', emoji:'🔴', name:'Red', hex:'#ff3366'},
-  {key:'blue', emoji:'🔵', name:'Blue', hex:'#3388ff'},
-  {key:'green', emoji:'🟢', name:'Green', hex:'#00e676'},
-  {key:'purple', emoji:'🟣', name:'Purple', hex:'#b829dd'},
-  {key:'yellow', emoji:'🟡', name:'Yellow', hex:'#ffcc00'},
-  {key:'orange', emoji:'🟠', name:'Orange', hex:'#ff8844'}
-];
-
-const ROLES = {
-  informant: { name:'The Informant', icon:'🟢', desc:'You receive genuine information. Help the group make the correct choice.', color:'#00e676' },
-  manipulator: { name:'The Manipulator', icon:'🔴', desc:'Convince the majority to select your target color without being discovered.', color:'#ff3366' },
-  deceiver: { name:'The Deceiver', icon:'🟣', desc:'Create confusion. Contradict others and sow doubt.', color:'#b829dd' },
-  analyst: { name:'The Analyst', icon:'🔵', desc:'You have a logical clue about color relationships.', color:'#3388ff' },
-  chaos: { name:'The Chaos Player', icon:'🟡', desc:'Prevent the group from reaching consensus.', color:'#ffcc00' }
-};
-
-const BOT_NAMES = ['Alex','Jordan','Casey','Riley','Taylor','Morgan','Quinn','Avery'];
-const AI_PERSONALITIES = ['aggressive','cautious','friendly','suspicious','logical'];
-
-// ===================== STATE =====================
-let game = {
-  players: [], humanIndex: 0, round: 1, maxRounds: 5,
-  phase: 'setup', timer: null, timeLeft: 90,
-  safeColor: null, dangerousColor: null,
-  chatHistory: [], accusations: [], votes: {},
-  matchStats: { correctVotes:0, accusations:0, correctAccusations:0, manipSuccess:0, totalRounds:0 }
-};
-let selectedAccuseId = null;
-let selectedVote = null;
-
-// ===================== UTILS =====================
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const el = document.getElementById(id);
-  if (el) el.classList.add('active');
+// ===================== DEBUG =====================
+function debug(msg) {
+  const el = document.getElementById('debug');
+  el.style.display = 'block';
+  el.textContent = msg;
+  console.log('[DEBUG]', msg);
 }
 
-function addChat(senderId, sender, text, isSystem) {
-  game.chatHistory.push({senderId: senderId, sender: sender, text: text, time: Date.now()});
-  const box = document.getElementById('chatMessages');
-  const isYou = senderId === 0;
-  const avatar = isSystem ? '🎨' : (isYou ? '👤' : game.players[senderId].name[0]);
-  const avatarClass = isYou ? 'you' : '';
-  const bubbleClass = isSystem ? 'system' : '';
-  const name = isSystem ? 'Game Master' : (isYou ? 'You' : sender);
-  const div = document.createElement('div');
-  div.className = 'chat-msg';
-  div.innerHTML = '<div class="chat-avatar ' + avatarClass + '">' + avatar + '</div><div class="chat-bubble ' + bubbleClass + '"><div class="name">' + name + '</div><div>' + text + '</div></div>';
-  box.appendChild(div);
-  box.scrollTop = box.scrollHeight;
-}
+try {
+  debug('Script loaded');
 
-// ===================== SETUP =====================
-document.querySelectorAll('.count-btn').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    document.querySelectorAll('.count-btn').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
+  // ===================== DATA =====================
+  const COLORS = [
+    {key:'red', emoji:'🔴', name:'Red', hex:'#ff3366'},
+    {key:'blue', emoji:'🔵', name:'Blue', hex:'#3388ff'},
+    {key:'green', emoji:'🟢', name:'Green', hex:'#00e676'},
+    {key:'purple', emoji:'🟣', name:'Purple', hex:'#b829dd'},
+    {key:'yellow', emoji:'🟡', name:'Yellow', hex:'#ffcc00'},
+    {key:'orange', emoji:'🟠', name:'Orange', hex:'#ff8844'}
+  ];
+
+  const ROLES = {
+    informant: { name:'The Informant', icon:'🟢', desc:'You receive genuine information. Help the group make the correct choice.', color:'#00e676' },
+    manipulator: { name:'The Manipulator', icon:'🔴', desc:'Convince the majority to select your target color.', color:'#ff3366' },
+    deceiver: { name:'The Deceiver', icon:'🟣', desc:'Create confusion and contradict others.', color:'#b829dd' },
+    analyst: { name:'The Analyst', icon:'🔵', desc:'You have a logical clue about color relationships.', color:'#3388ff' },
+    chaos: { name:'The Chaos Player', icon:'🟡', desc:'Prevent the group from reaching consensus.', color:'#ffcc00' }
+  };
+
+  const BOT_NAMES = ['Alex','Jordan','Casey','Riley','Taylor','Morgan','Quinn','Avery'];
+
+  // ===================== STATE =====================
+  var game = {
+    players: [], round: 1, maxRounds: 5, phase: 'setup',
+    timer: null, timeLeft: 90, safeColor: null, dangerousColor: null,
+    chatHistory: [], votes: {},
+    stats: { correctVotes:0, accusations:0, correctAccusations:0, manipSuccess:0, totalRounds:0 }
+  };
+  var selectedVote = null;
+  var selectedAccuseId = null;
+
+  // ===================== UTILS =====================
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+    var el = document.getElementById(id);
+    if (el) el.classList.add('active');
+  }
+
+  function addChat(senderId, sender, text, isSystem) {
+    game.chatHistory.push({senderId:senderId, sender:sender, text:text});
+    var box = document.getElementById('chatMessages');
+    var isYou = senderId === 0;
+    var avatar = isSystem ? '🎨' : (isYou ? '👤' : game.players[senderId].name[0]);
+    var name = isSystem ? 'Game Master' : (isYou ? 'You' : sender);
+    var div = document.createElement('div');
+    div.className = 'chat-msg';
+    var avatarClass = isYou ? ' you' : '';
+    var bubbleClass = isSystem ? ' system' : '';
+    div.innerHTML = '<div class="chat-avatar' + avatarClass + '">' + avatar + '</div><div class="chat-bubble' + bubbleClass + '"><div class="name">' + name + '</div>' + text + '</div>';
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  // ===================== SETUP =====================
+  document.querySelectorAll('.count-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.count-btn').forEach(function(b) { b.classList.remove('selected'); });
+      btn.classList.add('selected');
+    });
   });
-});
 
-document.getElementById('startBtn').addEventListener('click', function() {
-  try {
-    const name = document.getElementById('playerName').value.trim() || 'You';
-    const selectedBtn = document.querySelector('.count-btn.selected');
-    const count = selectedBtn ? parseInt(selectedBtn.getAttribute('data-n')) : 5;
+  document.getElementById('btnStart').addEventListener('click', function() {
+    debug('Start clicked');
+    var name = document.getElementById('playerName').value.trim() || 'You';
+    var selectedBtn = document.querySelector('.count-btn.selected');
+    var count = selectedBtn ? parseInt(selectedBtn.getAttribute('data-n')) : 5;
     initPlayers(name, count);
     assignRoles();
     renderRoleCard();
     showScreen('screenRole');
-  } catch(e) {
-    console.error('Start error:', e);
-    alert('Error starting game: ' + e.message);
-  }
-});
-
-function initPlayers(humanName, total) {
-  game.players = [];
-  const shuffledNames = BOT_NAMES.slice().sort(function() { return Math.random() - 0.5; });
-  game.players.push({
-    id: 0, name: humanName, isHuman: true,
-    role: null, secret: null, objective: null,
-    vote: null, score: 0, accusations: 0, correctAccusations: 0
+    debug('Switched to role screen');
   });
-  for (let i = 1; i < total; i++) {
+
+  function initPlayers(humanName, total) {
+    game.players = [];
+    var shuffled = BOT_NAMES.slice().sort(function() { return Math.random() - 0.5; });
     game.players.push({
-      id: i, name: shuffledNames[i-1], isHuman: false,
-      role: null, secret: null, objective: null,
-      vote: null, score: 0, accusations: 0, correctAccusations: 0
+      id:0, name:humanName, isHuman:true,
+      role:null, secret:null, objective:null, vote:null,
+      score:0, accusations:0, correctAccusations:0
+    });
+    for (var i = 1; i < total; i++) {
+      game.players.push({
+        id:i, name:shuffled[i-1], isHuman:false,
+        role:null, secret:null, objective:null, vote:null,
+        score:0, accusations:0, correctAccusations:0
+      });
+    }
+  }
+
+  function assignRoles() {
+    var roles = ['informant','manipulator','deceiver','analyst','chaos'];
+    var assigned = ['manipulator', 'informant'];
+    while (assigned.length < game.players.length) {
+      assigned.push(roles[Math.floor(Math.random() * roles.length)]);
+    }
+    assigned.sort(function() { return Math.random() - 0.5; });
+    game.players.forEach(function(p, i) {
+      p.role = assigned[i];
+      generateSecret(p);
     });
   }
-  game.humanIndex = 0;
-}
 
-function assignRoles() {
-  const roles = ['informant','manipulator','deceiver','analyst','chaos'];
-  const assigned = ['manipulator', 'informant'];
-  while (assigned.length < game.players.length) {
-    assigned.push(roles[Math.floor(Math.random() * roles.length)]);
+  function generateSecret(player) {
+    var safe = COLORS[Math.floor(Math.random() * COLORS.length)];
+    var dangerous = COLORS.filter(function(c) { return c.key !== safe.key; })[Math.floor(Math.random() * 5)];
+    var other = COLORS.filter(function(c) { return c.key !== safe.key && c.key !== dangerous.key; })[0];
+    game.safeColor = safe;
+    game.dangerousColor = dangerous;
+
+    switch(player.role) {
+      case 'informant':
+        player.secret = safe.name + ' is safe.';
+        player.objective = 'Help majority choose ' + safe.name;
+        break;
+      case 'manipulator':
+        var target = Math.random() > 0.5 ? dangerous : other;
+        player.secret = 'Make everyone choose ' + target.name + '. Bonus if ' + target.name + ' wins.';
+        player.objective = target.key;
+        break;
+      case 'deceiver':
+        player.secret = 'Create confusion. Make players doubt ' + safe.name + '.';
+        player.objective = 'Prevent consensus on ' + safe.name;
+        break;
+      case 'analyst':
+        player.secret = 'If ' + safe.name + ' is safe, then ' + dangerous.name + ' is dangerous.';
+        player.objective = 'Deduce the safe color';
+        break;
+      case 'chaos':
+        player.secret = 'Prevent unanimous decision. Split vote = you win.';
+        player.objective = 'No color gets 50%+ votes';
+        break;
+    }
   }
-  assigned.sort(function() { return Math.random() - 0.5; });
-  game.players.forEach(function(p, i) {
-    p.role = assigned[i];
-    generateSecret(p);
-  });
-}
 
-function generateSecret(player) {
-  const safe = COLORS[Math.floor(Math.random() * COLORS.length)];
-  const dangerous = COLORS.filter(function(c) { return c.key !== safe.key; })[Math.floor(Math.random() * 5)];
-  const other = COLORS.filter(function(c) { return c.key !== safe.key && c.key !== dangerous.key; })[0];
-  game.safeColor = safe;
-  game.dangerousColor = dangerous;
-
-  switch(player.role) {
-    case 'informant':
-      player.secret = safe.name + ' is safe.';
-      player.objective = 'Help the majority choose ' + safe.name + '.';
-      break;
-    case 'manipulator':
-      const target = Math.random() > 0.5 ? dangerous : other;
-      player.secret = 'Make everyone choose ' + target.name + '. You gain bonus points if ' + target.name + ' gets the most votes.';
-      player.objective = target.key;
-      break;
-    case 'deceiver':
-      player.secret = 'Create confusion. Contradict the popular opinion. Make players doubt ' + safe.name + '.';
-      player.objective = 'Prevent a clear consensus on ' + safe.name + '.';
-      break;
-    case 'analyst':
-      const rel = Math.random() > 0.5;
-      player.secret = rel ? 'If ' + safe.name + ' is safe, then ' + dangerous.name + ' is dangerous.' : safe.name + ' and ' + other.name + ' have opposite properties.';
-      player.objective = 'Correctly deduce which color is safe.';
-      break;
-    case 'chaos':
-      player.secret = 'Prevent the group from reaching a unanimous decision. A split vote benefits you.';
-      player.objective = 'Ensure no single color gets more than 50% of votes.';
-      break;
+  function renderRoleCard() {
+    var p = game.players[0];
+    var r = ROLES[p.role];
+    document.getElementById('roleIcon').textContent = r.icon;
+    document.getElementById('roleName').textContent = r.name;
+    document.getElementById('roleName').style.color = r.color;
+    document.getElementById('roleDesc').textContent = r.desc;
+    document.getElementById('secretText').textContent = p.secret;
   }
-}
 
-function renderRoleCard() {
-  const p = game.players[game.humanIndex];
-  const r = ROLES[p.role];
-  document.getElementById('roleIcon').textContent = r.icon;
-  document.getElementById('roleName').textContent = r.name;
-  document.getElementById('roleName').style.color = r.color;
-  document.getElementById('roleDesc').textContent = r.desc;
-  document.getElementById('secretText').textContent = p.secret;
-}
+  // ===================== DISCUSSION =====================
+  document.getElementById('btnEnterDiscuss').addEventListener('click', enterDiscussion);
 
-// ===================== DISCUSSION =====================
-document.getElementById('enterDiscussBtn').addEventListener('click', enterDiscussion);
+  function enterDiscussion() {
+    debug('Entering discussion');
+    document.getElementById('hud').classList.add('active');
+    showScreen('screenGame');
+    game.phase = 'discuss';
+    game.timeLeft = 90;
+    game.chatHistory = [];
+    game.votes = {};
+    game.players.forEach(function(p) { p.vote = null; });
 
-function enterDiscussion() {
-  document.getElementById('gameHud').style.display = 'flex';
-  showScreen('screenGame');
-  game.phase = 'discuss';
-  game.timeLeft = 90;
-  game.chatHistory = [];
-  game.accusations = [];
-  game.votes = {};
-  game.players.forEach(function(p) { p.vote = null; });
+    document.getElementById('colorBar').innerHTML = COLORS.map(function(c) {
+      return '<div class="color-pill ' + c.key + '">' + c.emoji + '</div>';
+    }).join('');
 
-  document.getElementById('colorBar').innerHTML = COLORS.map(function(c) {
-    return '<div class="color-pill ' + c.key + '">' + c.emoji + '</div>';
-  }).join('');
+    document.getElementById('chatMessages').innerHTML = '';
+    addChat('system', 'Game Master', 'Round ' + game.round + ': Discuss and discover the truth. 90 seconds.', true);
 
-  document.getElementById('chatMessages').innerHTML = '';
-  addChat('system', 'Game Master', 'Round ' + game.round + ': The colors are displayed. Discuss and discover the truth. You have 90 seconds.', true);
+    startTimer();
+    scheduleAIChat();
+  }
 
-  startTimer();
-  scheduleAIChat();
-}
-
-function startTimer() {
-  updateTimerDisplay();
-  game.timer = setInterval(function() {
-    game.timeLeft--;
+  function startTimer() {
     updateTimerDisplay();
-    if (game.timeLeft <= 0) {
-      clearInterval(game.timer);
+    game.timer = setInterval(function() {
+      game.timeLeft--;
+      updateTimerDisplay();
+      if (game.timeLeft <= 0) {
+        clearInterval(game.timer);
+        if (game.phase === 'discuss') enterVote();
+      }
+    }, 1000);
+  }
+
+  function updateTimerDisplay() {
+    var el = document.getElementById('hudTimer');
+    el.textContent = game.timeLeft;
+    el.style.color = game.timeLeft <= 15 ? '#ff3366' : (game.timeLeft <= 30 ? '#ffcc00' : '#00f0ff');
+  }
+
+  function scheduleAIChat() {
+    var delays = [2000, 4500, 7000, 10000, 14000, 18000, 23000, 28000, 35000, 42000];
+    delays.forEach(function(d) {
+      setTimeout(function() {
+        if (game.phase === 'discuss') aiSpeak();
+      }, d);
+    });
+    setTimeout(function() {
       if (game.phase === 'discuss') enterVote();
-    }
-  }, 1000);
-}
-
-function updateTimerDisplay() {
-  const el = document.getElementById('hudTimer');
-  el.textContent = game.timeLeft;
-  el.classList.remove('warning', 'danger');
-  if (game.timeLeft <= 15) el.classList.add('danger');
-  else if (game.timeLeft <= 30) el.classList.add('warning');
-}
-
-function scheduleAIChat() {
-  const delays = [2000, 4500, 7000, 10000, 14000, 18000, 23000, 28000, 35000, 42000];
-  delays.forEach(function(d) {
-    setTimeout(function() {
-      if (game.phase === 'discuss') aiSpeak();
-    }, d);
-  });
-  setTimeout(function() {
-    if (game.phase === 'discuss') enterVote();
-  }, 90000);
-}
-
-function getBotPersonality(bot) {
-  if (!bot.personality) bot.personality = AI_PERSONALITIES[bot.id % AI_PERSONALITIES.length];
-  return bot.personality;
-}
-
-function aiSpeak() {
-  const bots = game.players.filter(function(p) { return !p.isHuman; });
-  const speaker = bots[Math.floor(Math.random() * bots.length)];
-  const msg = generateAIMessage(speaker);
-  addChat(speaker.id, speaker.name, msg, false);
-}
-
-function generateAIMessage(bot) {
-  const safe = game.safeColor;
-  const colors = COLORS.map(function(c) { return c.name; });
-  function randColor() { return colors[Math.floor(Math.random() * colors.length)]; }
-
-  if (bot.role === 'manipulator') {
-    const targetName = COLORS.find(function(c) { return c.key === bot.objective; })?.name || randColor();
-    const lines = [
-      'I'm fairly certain ' + targetName + ' is the safe choice.',
-      'I've got a strong feeling about ' + targetName + '.',
-      'Why is nobody considering ' + targetName + '? It feels right.',
-      targetName + ' stands out to me. I'd bet on it.',
-      'Trust me, ' + targetName + ' is the answer.'
-    ];
-    return lines[Math.floor(Math.random() * lines.length)];
+    }, 90000);
   }
-  if (bot.role === 'informant') {
-    const lines = [
-      'I have reason to believe ' + safe.name + ' is safe.',
-      'My information points to ' + safe.name + '.',
-      'I'd go with ' + safe.name + ' based on what I know.',
-      safe.name + ' seems like the logical choice.',
-      'I'm confident ' + safe.name + ' is correct.'
-    ];
-    return lines[Math.floor(Math.random() * lines.length)];
-  }
-  if (bot.role === 'deceiver') {
-    const fake = colors.filter(function(c) { return c !== safe.name; })[Math.floor(Math.random() * 5)];
-    const lines = [
-      'Wait, are we sure about ' + safe.name + '? I'm not convinced.',
-      'Actually, my info suggests ' + fake + ' might be safe.',
-      'I think someone is trying to push us toward the wrong color.',
-      safe.name + '? That doesn't match what I was told.',
-      'Be careful. Not everyone is being honest here.'
-    ];
-    return lines[Math.floor(Math.random() * lines.length)];
-  }
-  if (bot.role === 'analyst') {
-    const lines = [
-      'Logically, ' + safe.name + ' makes the most sense.',
-      'If we analyze the patterns, ' + safe.name + ' fits.',
-      'My deduction leads to ' + safe.name + '.',
-      'The relationship between colors suggests ' + safe.name + '.',
-      'Let's think this through... ' + safe.name + ' is the answer.'
-    ];
-    return lines[Math.floor(Math.random() * lines.length)];
-  }
-  if (bot.role === 'chaos') {
-    const lines = [
-      'I think we should all vote for different colors.',
-      'What if the safe color isn't even obvious?',
-      'I'm torn between ' + randColor() + ' and ' + randColor() + '.',
-      'Maybe there IS no safe color?',
-      'Let's not all agree too quickly.'
-    ];
-    return lines[Math.floor(Math.random() * lines.length)];
-  }
-  return 'I think ' + randColor() + ' might be safe.';
-}
 
-// Quick chat buttons
-document.querySelectorAll('.quick-btn[data-msg]').forEach(function(btn) {
-  btn.addEventListener('click', function() {
-    if (game.phase !== 'discuss') return;
-    const text = btn.getAttribute('data-msg');
-    addChat(0, game.players[0].name, text, false);
-    setTimeout(function() {
-      const bots = game.players.filter(function(p) { return !p.isHuman; });
-      if (Math.random() > 0.6) return;
-      const responder = bots[Math.floor(Math.random() * bots.length)];
-      const msg = generateAIResponse(responder, text);
-      setTimeout(function() { addChat(responder.id, responder.name, msg, false); }, 500 + Math.random() * 1500);
-    }, 800 + Math.random() * 1000);
-  });
-});
-
-function generateAIResponse(bot, humanText) {
-  const safe = game.safeColor;
-  if (humanText.indexOf('trust') >= 0 || humanText.indexOf('doubt') >= 0) {
-    return 'Exactly. We need to be careful about who we trust.';
+  function aiSpeak() {
+    var bots = game.players.filter(function(p) { return !p.isHuman; });
+    var speaker = bots[Math.floor(Math.random() * bots.length)];
+    var msg = generateAIMessage(speaker);
+    addChat(speaker.id, speaker.name, msg, false);
   }
-  if (humanText.indexOf('vote') >= 0 || humanText.indexOf('choose') >= 0) {
+
+  function generateAIMessage(bot) {
+    var safe = game.safeColor;
     if (bot.role === 'manipulator') {
-      const target = COLORS.find(function(c) { return c.key === bot.objective; })?.name;
-      return 'I'm ready to vote ' + target + '.';
+      var target = COLORS.find(function(c) { return c.key === bot.objective; });
+      var tname = target ? target.name : 'Purple';
+      var lines = [
+        'I am fairly certain ' + tname + ' is safe.',
+        'I have a strong feeling about ' + tname + '.',
+        'Trust me, ' + tname + ' is the answer.',
+        'Why is nobody considering ' + tname + '?'
+      ];
+      return lines[Math.floor(Math.random() * lines.length)];
     }
-    return 'I'm leaning toward ' + safe.name + '.';
+    if (bot.role === 'informant') {
+      var lines = [
+        'I believe ' + safe.name + ' is safe.',
+        'My info points to ' + safe.name + '.',
+        'I am confident ' + safe.name + ' is correct.'
+      ];
+      return lines[Math.floor(Math.random() * lines.length)];
+    }
+    if (bot.role === 'deceiver') {
+      var fake = COLORS.filter(function(c) { return c.key !== safe.key; })[Math.floor(Math.random() * 5)];
+      var lines = [
+        'Wait, are we sure about ' + safe.name + '?',
+        'My info suggests ' + fake.name + ' might be safe.',
+        'Someone is pushing us toward the wrong color.',
+        'Be careful. Not everyone is honest.'
+      ];
+      return lines[Math.floor(Math.random() * lines.length)];
+    }
+    if (bot.role === 'analyst') {
+      var lines = [
+        'Logically, ' + safe.name + ' makes sense.',
+        'My deduction leads to ' + safe.name + '.',
+        'The pattern suggests ' + safe.name + '.'
+      ];
+      return lines[Math.floor(Math.random() * lines.length)];
+    }
+    if (bot.role === 'chaos') {
+      var lines = [
+        'I think we should vote for different colors.',
+        'What if there is no safe color?',
+        'Let us not agree too quickly.'
+      ];
+      return lines[Math.floor(Math.random() * lines.length)];
+    }
+    return 'I think ' + safe.name + ' might be safe.';
   }
-  if (humanText.indexOf('information') >= 0 || humanText.indexOf('know') >= 0) {
-    return 'I have some info too, but I don't want to reveal everything.';
-  }
-  return generateAIMessage(bot);
-}
 
-// ===================== ACCUSATION =====================
-document.getElementById('accuseBtn').addEventListener('click', openAccuse);
-document.getElementById('cancelAccuseBtn').addEventListener('click', closeAccuse);
-document.getElementById('submitAccuseBtn').addEventListener('click', submitAccuse);
-
-function openAccuse() {
-  const list = document.getElementById('accuseList');
-  list.innerHTML = '';
-  game.players.filter(function(p) { return !p.isHuman; }).forEach(function(p) {
-    const div = document.createElement('div');
-    div.className = 'player-option';
-    div.setAttribute('data-id', p.id);
-    div.innerHTML = '<div class="chat-avatar">' + p.name[0] + '</div><div><div style="font-weight:700;">' + p.name + '</div><div style="font-size:.75rem;color:var(--text-dim);">Player ' + (p.id+1) + '</div></div>';
-    div.addEventListener('click', function() {
-      document.querySelectorAll('.player-option').forEach(function(e) { e.classList.remove('selected'); });
-      div.classList.add('selected');
-      selectedAccuseId = p.id;
+  // Quick chat buttons
+  document.querySelectorAll('.quick-btn[data-msg]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      if (game.phase !== 'discuss') return;
+      var text = btn.getAttribute('data-msg');
+      addChat(0, game.players[0].name, text, false);
+      setTimeout(function() {
+        var bots = game.players.filter(function(p) { return !p.isHuman; });
+        if (Math.random() > 0.6) return;
+        var responder = bots[Math.floor(Math.random() * bots.length)];
+        var msg = generateAIResponse(responder, text);
+        setTimeout(function() { addChat(responder.id, responder.name, msg, false); }, 500 + Math.random() * 1500);
+      }, 800 + Math.random() * 1000);
     });
-    list.appendChild(div);
   });
-  document.getElementById('accuseModal').classList.add('active');
-}
 
-function closeAccuse() {
-  document.getElementById('accuseModal').classList.remove('active');
-  selectedAccuseId = null;
-}
-
-function submitAccuse() {
-  if (selectedAccuseId === null) return;
-  const target = game.players[selectedAccuseId];
-  addChat(0, game.players[0].name, 'I accuse ' + target.name + ' of being the Manipulator!', false);
-  game.players[0].accusations++;
-  game.matchStats.accusations++;
-  if (target.role === 'manipulator') {
-    game.players[0].correctAccusations++;
-    game.matchStats.correctAccusations++;
-    addChat('system', 'Game Master', 'Correct accusation! ' + target.name + ' IS the Manipulator.', true);
-  } else {
-    addChat('system', 'Game Master', target.name + ' is NOT the Manipulator. Be more careful.', true);
+  function generateAIResponse(bot, humanText) {
+    var safe = game.safeColor;
+    if (humanText.indexOf('trust') >= 0 || humanText.indexOf('doubt') >= 0) {
+      return 'We need to be careful about who we trust.';
+    }
+    if (humanText.indexOf('vote') >= 0 || humanText.indexOf('choose') >= 0) {
+      if (bot.role === 'manipulator') {
+        var target = COLORS.find(function(c) { return c.key === bot.objective; });
+        return 'I am ready to vote ' + (target ? target.name : 'Purple') + '.';
+      }
+      return 'I am leaning toward ' + safe.name + '.';
+    }
+    return generateAIMessage(bot);
   }
-  closeAccuse();
-  setTimeout(function() {
-    const bots = game.players.filter(function(p) { return !p.isHuman; });
-    const bot = bots[Math.floor(Math.random() * bots.length)];
-    addChat(bot.id, bot.name, target.role === 'manipulator' ? 'I had my suspicions about ' + target.name + ' too.' : target.name + '? I don't think so.', false);
-  }, 1000);
-}
 
-// ===================== VOTING =====================
-function enterVote() {
-  clearInterval(game.timer);
-  game.phase = 'vote';
-  document.getElementById('phaseBadge').textContent = 'VOTING';
-  showScreen('screenVote');
+  // ===================== ACCUSATION =====================
+  document.getElementById('btnAccuse').addEventListener('click', openAccuse);
+  document.getElementById('btnCancelAccuse').addEventListener('click', closeAccuse);
+  document.getElementById('btnSubmitAccuse').addEventListener('click', submitAccuse);
 
-  const grid = document.getElementById('voteGrid');
-  grid.innerHTML = '';
-  selectedVote = null;
-  document.getElementById('confirmVoteBtn').disabled = true;
-
-  COLORS.forEach(function(c) {
-    const div = document.createElement('div');
-    div.className = 'vote-card ' + c.key;
-    div.innerHTML = c.emoji + '<div class="vote-label">' + c.name + '</div>';
-    div.addEventListener('click', function() {
-      selectedVote = c.key;
-      document.querySelectorAll('.vote-card').forEach(function(card) { card.classList.remove('selected'); });
-      div.classList.add('selected');
-      document.getElementById('confirmVoteBtn').disabled = false;
+  function openAccuse() {
+    var list = document.getElementById('accuseList');
+    list.innerHTML = '';
+    game.players.filter(function(p) { return !p.isHuman; }).forEach(function(p) {
+      var div = document.createElement('div');
+      div.className = 'player-option';
+      div.innerHTML = '<div class="chat-avatar">' + p.name[0] + '</div><div><div style="font-weight:700;">' + p.name + '</div></div>';
+      div.addEventListener('click', function() {
+        document.querySelectorAll('.player-option').forEach(function(e) { e.classList.remove('selected'); });
+        div.classList.add('selected');
+        selectedAccuseId = p.id;
+      });
+      list.appendChild(div);
     });
-    grid.appendChild(div);
-  });
-}
+    document.getElementById('modalAccuse').classList.add('active');
+  }
 
-document.getElementById('confirmVoteBtn').addEventListener('click', function() {
-  if (!selectedVote) return;
-  game.players[0].vote = selectedVote;
-  game.players.filter(function(p) { return !p.isHuman; }).forEach(function(bot) {
-    bot.vote = generateAIVote(bot);
-  });
-  showReveal();
-});
+  function closeAccuse() {
+    document.getElementById('modalAccuse').classList.remove('active');
+    selectedAccuseId = null;
+  }
 
-function generateAIVote(bot) {
-  const safe = game.safeColor.key;
-  if (bot.role === 'manipulator') {
-    if (Math.random() < 0.8) return bot.objective;
-    return safe;
+  function submitAccuse() {
+    if (selectedAccuseId === null) return;
+    var target = game.players[selectedAccuseId];
+    addChat(0, game.players[0].name, 'I accuse ' + target.name + ' of being the Manipulator!', false);
+    game.players[0].accusations++;
+    game.stats.accusations++;
+    if (target.role === 'manipulator') {
+      game.players[0].correctAccusations++;
+      game.stats.correctAccusations++;
+      addChat('system', 'Game Master', 'Correct! ' + target.name + ' IS the Manipulator.', true);
+    } else {
+      addChat('system', 'Game Master', target.name + ' is NOT the Manipulator.', true);
+    }
+    closeAccuse();
   }
-  if (bot.role === 'informant') return safe;
-  if (bot.role === 'analyst') {
-    return Math.random() < 0.7 ? safe : COLORS.filter(function(c) { return c.key !== safe; })[Math.floor(Math.random() * 5)].key;
+
+  // ===================== VOTING =====================
+  function enterVote() {
+    clearInterval(game.timer);
+    game.phase = 'vote';
+    showScreen('screenVote');
+
+    var grid = document.getElementById('voteGrid');
+    grid.innerHTML = '';
+    selectedVote = null;
+    document.getElementById('btnConfirmVote').disabled = true;
+
+    COLORS.forEach(function(c) {
+      var div = document.createElement('div');
+      div.className = 'vote-card ' + c.key;
+      div.innerHTML = c.emoji + '<div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;margin-top:4px;">' + c.name + '</div>';
+      div.addEventListener('click', function() {
+        selectedVote = c.key;
+        document.querySelectorAll('.vote-card').forEach(function(card) { card.classList.remove('selected'); });
+        div.classList.add('selected');
+        document.getElementById('btnConfirmVote').disabled = false;
+      });
+      grid.appendChild(div);
+    });
   }
-  if (bot.role === 'deceiver') {
-    return COLORS.filter(function(c) { return c.key !== safe; })[Math.floor(Math.random() * 5)].key;
-  }
-  if (bot.role === 'chaos') {
+
+  document.getElementById('btnConfirmVote').addEventListener('click', function() {
+    if (!selectedVote) return;
+    game.players[0].vote = selectedVote;
+    game.players.filter(function(p) { return !p.isHuman; }).forEach(function(bot) {
+      bot.vote = generateAIVote(bot);
+    });
+    showReveal();
+  });
+
+  function generateAIVote(bot) {
+    var safe = game.safeColor.key;
+    if (bot.role === 'manipulator') {
+      return Math.random() < 0.8 ? bot.objective : safe;
+    }
+    if (bot.role === 'informant') return safe;
+    if (bot.role === 'analyst') {
+      return Math.random() < 0.7 ? safe : COLORS.filter(function(c) { return c.key !== safe; })[Math.floor(Math.random() * 5)].key;
+    }
+    if (bot.role === 'deceiver') {
+      return COLORS.filter(function(c) { return c.key !== safe; })[Math.floor(Math.random() * 5)].key;
+    }
     return COLORS[Math.floor(Math.random() * 6)].key;
   }
-  return safe;
-}
 
-// ===================== REVEAL =====================
-function showReveal() {
-  game.phase = 'reveal';
-  showScreen('screenReveal');
+  // ===================== REVEAL =====================
+  function showReveal() {
+    game.phase = 'reveal';
+    showScreen('screenReveal');
 
-  const safe = game.safeColor;
-  document.getElementById('revealSafe').innerHTML = safe.emoji + ' <span style="color:' + safe.hex + '">' + safe.name + ' WAS SAFE</span>';
+    var safe = game.safeColor;
+    document.getElementById('revealSafe').innerHTML = safe.emoji + ' <span style="color:' + safe.hex + '">' + safe.name + ' WAS SAFE</span>';
 
-  const counts = {};
-  COLORS.forEach(function(c) { counts[c.key] = 0; });
-  game.players.forEach(function(p) { if (p.vote) counts[p.vote]++; });
+    var counts = {};
+    COLORS.forEach(function(c) { counts[c.key] = 0; });
+    game.players.forEach(function(p) { if (p.vote) counts[p.vote]++; });
 
-  const resultsDiv = document.getElementById('voteResults');
-  resultsDiv.innerHTML = '';
-  COLORS.forEach(function(c) {
-    const count = counts[c.key];
-    if (count === 0) return;
-    const div = document.createElement('div');
-    div.className = 'result-pill';
-    div.innerHTML = '<div class="dot" style="background:' + c.hex + '"></div>' + c.emoji + ' ' + c.name + ': ' + count + ' vote' + (count > 1 ? 's' : '');
-    resultsDiv.appendChild(div);
-  });
+    var resultsDiv = document.getElementById('voteResults');
+    resultsDiv.innerHTML = '';
+    COLORS.forEach(function(c) {
+      var count = counts[c.key];
+      if (count === 0) return;
+      var div = document.createElement('div');
+      div.style.cssText = 'background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:8px 16px;display:flex;align-items:center;gap:6px;font-size:0.85rem;';
+      div.innerHTML = '<div style="width:12px;height:12px;border-radius:50%;background:' + c.hex + ';"></div>' + c.emoji + ' ' + c.name + ': ' + count;
+      resultsDiv.appendChild(div);
+    });
 
-  const grid = document.getElementById('playerRevealGrid');
-  grid.innerHTML = '';
-  game.players.forEach(function(p) {
-    const r = ROLES[p.role];
-    const v = COLORS.find(function(c) { return c.key === p.vote; });
-    const isCorrect = p.vote === safe.key;
-    const isWinner = (p.role === 'manipulator' && counts[p.objective] >= Math.ceil(game.players.length / 2)) || (p.role !== 'manipulator' && isCorrect);
-    const cardClass = isWinner ? 'winner' : (p.isHuman ? 'loser' : '');
-    const check = isWinner ? '✓' : '✗';
+    var grid = document.getElementById('resultsGrid');
+    grid.innerHTML = '';
+    game.players.forEach(function(p) {
+      var r = ROLES[p.role];
+      var v = COLORS.find(function(c) { return c.key === p.vote; });
+      var isCorrect = p.vote === safe.key;
+      var isWinner = (p.role === 'manipulator' && counts[p.objective] >= Math.ceil(game.players.length / 2)) || (p.role !== 'manipulator' && isCorrect);
+      var cardClass = isWinner ? 'winner' : (p.isHuman ? 'loser' : '');
+      var check = isWinner ? '✓' : '✗';
 
-    if (p.isHuman && isCorrect) game.matchStats.correctVotes++;
-    if (p.role === 'manipulator' && counts[p.objective] >= Math.ceil(game.players.length / 2)) {
-      game.matchStats.manipSuccess++;
+      if (p.isHuman && isCorrect) game.stats.correctVotes++;
+      if (p.role === 'manipulator' && counts[p.objective] >= Math.ceil(game.players.length / 2)) {
+        game.stats.manipSuccess++;
+      }
+
+      var div = document.createElement('div');
+      div.className = 'result-card ' + cardClass;
+      div.innerHTML = '<div style="font-weight:700;">' + (p.isHuman ? '👤 ' : '') + p.name + '</div><div style="font-size:0.75rem;color:#8888a0;">' + r.icon + ' ' + r.name + '</div><div style="font-size:0.7rem;color:#00f0ff;margin-top:4px;">' + p.secret.substring(0, 40) + '...</div><div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center;"><span>' + (v ? v.emoji + ' ' + v.name : '?') + '</span><span style="color:' + (isWinner ? '#00e676' : '#ff3366') + ';font-weight:700;">' + check + '</span></div>';
+      grid.appendChild(div);
+    });
+
+    game.stats.totalRounds++;
+
+    var btn = document.getElementById('btnNextRound');
+    if (game.round >= game.maxRounds) {
+      btn.textContent = 'See Final Results';
+      btn.onclick = showFinal;
+    } else {
+      btn.textContent = 'Next Round';
+      btn.onclick = nextRound;
     }
-
-    const div = document.createElement('div');
-    div.className = 'reveal-card ' + cardClass;
-    div.innerHTML = '<div class="r-name">' + (p.isHuman ? '👤 ' : '') + p.name + '</div><div class="r-role">' + r.icon + ' ' + r.name + '</div><div class="r-obj">' + p.secret.substring(0, 50) + '...</div><div class="r-vote">Voted: ' + (v ? v.emoji + ' ' + v.name : '?') + '<span style="margin-left:auto;color:' + (isWinner ? 'var(--green)' : 'var(--red)') + ';font-weight:700;">' + check + '</span></div>';
-    grid.appendChild(div);
-  });
-
-  game.matchStats.totalRounds++;
-
-  const btn = document.getElementById('nextRoundBtn');
-  if (game.round >= game.maxRounds) {
-    btn.textContent = 'See Final Results';
-    btn.onclick = showFinal;
-  } else {
-    btn.textContent = 'Next Round';
-    btn.onclick = nextRound;
-  }
-}
-
-function nextRound() {
-  game.round++;
-  document.getElementById('hudRound').textContent = game.round;
-  document.getElementById('phaseBadge').textContent = 'DISCUSSION';
-
-  if (game.round >= 3 && Math.random() < 0.3) {
-    triggerChaosEvent();
   }
 
-  game.players.forEach(function(p) { generateSecret(p); });
-  renderRoleCard();
-  showScreen('screenRole');
+  function nextRound() {
+    game.round++;
+    document.getElementById('hudRound').textContent = game.round;
+    game.players.forEach(function(p) { generateSecret(p); });
+    renderRoleCard();
+    showScreen('screenRole');
+  }
+
+  // ===================== FINAL =====================
+  function showFinal() {
+    showScreen('screenFinal');
+    document.getElementById('hud').classList.remove('active');
+
+    var stats = game.stats;
+    var total = stats.totalRounds || 1;
+    var accuracy = Math.round((stats.correctVotes / total) * 100);
+    var accAccuracy = stats.accusations > 0 ? Math.round((stats.correctAccusations / stats.accusations) * 100) : 0;
+    var social = Math.round((accuracy + accAccuracy) / 2);
+
+    var rank = 'Color Rookie';
+    if (social >= 80) rank = 'Conspiracy Architect';
+    else if (social >= 60) rank = 'Psychological Mastermind';
+    else if (social >= 40) rank = 'Master Manipulator';
+    else if (social >= 20) rank = 'Social Strategist';
+
+    var score = (stats.correctVotes * 1000) + (stats.correctAccusations * 1500) + (social * 50);
+
+    document.getElementById('finalRank').textContent = rank;
+    document.getElementById('finalScore').textContent = score.toLocaleString();
+    document.getElementById('statCorrect').textContent = stats.correctVotes + '/' + total;
+    document.getElementById('statAccuse').textContent = stats.correctAccusations + '/' + stats.accusations;
+    document.getElementById('statManip').textContent = Math.round((stats.manipSuccess / total) * 100) + '%';
+    document.getElementById('statSocial').textContent = social + '%';
+  }
+
+  debug('Game ready - click Start Match');
+
+} catch (e) {
+  debug('FATAL ERROR: ' + e.message);
+  console.error(e);
 }
-
-function triggerChaosEvent() {
-  const events = [
-    { text: '🌈 COLOR SWAP! Two colors exchanged properties!', effect: function() { var temp = game.safeColor; game.safeColor = game.dangerousColor; game.dangerousColor = temp; } },
-    { text: '⏱️ TIME ATTACK! Discussion time halved!', effect: function() { game.timeLeft = 45; } },
-    { text: '🎭 SECRET SHIFT! One player's objective changed!', effect: function() { var bots = game.players.filter(function(p) { return !p.isHuman; }); var bot = bots[0]; bot.role = ['manipulator','deceiver','chaos'][Math.floor(Math.random() * 3)]; generateSecret(bot); } }
-  ];
-  const ev = events[Math.floor(Math.random() * events.length)];
-  const banner = document.getElementById('chaosBanner');
-  banner.textContent = ev.text;
-  banner.classList.add('show');
-  ev.effect();
-  setTimeout(function() { banner.classList.remove('show'); }, 4000);
-}
-
-// ===================== FINAL =====================
-function showFinal() {
-  showScreen('screenFinal');
-  document.getElementById('gameHud').style.display = 'none';
-
-  const stats = game.matchStats;
-  const total = stats.totalRounds || 1;
-  const accuracy = Math.round((stats.correctVotes / total) * 100);
-  const accAccuracy = stats.accusations > 0 ? Math.round((stats.correctAccusations / stats.accusations) * 100) : 0;
-  const social = Math.round((accuracy + accAccuracy) / 2);
-
-  let rank = 'Color Rookie';
-  if (social >= 80) rank = 'Conspiracy Architect';
-  else if (social >= 60) rank = 'Psychological Mastermind';
-  else if (social >= 40) rank = 'Master Manipulator';
-  else if (social >= 20) rank = 'Social Strategist';
-
-  const score = (stats.correctVotes * 1000) + (stats.correctAccusations * 1500) + (social * 50);
-
-  document.getElementById('finalRank').textContent = rank;
-  document.getElementById('finalScore').textContent = score.toLocaleString();
-  document.getElementById('statCorrect').textContent = stats.correctVotes + '/' + total;
-  document.getElementById('statAccuse').textContent = stats.correctAccusations + '/' + stats.accusations;
-  document.getElementById('statManip').textContent = Math.round((stats.manipSuccess / total) * 100) + '%';
-  document.getElementById('statSocial').textContent = social + '%';
-}
-
-console.log('Color Conspiracy loaded successfully');
 </script>
 </body>
 </html>
